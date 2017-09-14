@@ -27,7 +27,6 @@ namespace TOKS_lab1
 
         private void DynamicConfigComponents()
         {
-            RefreshPortList();
             RefreshViewAsRequred();
 
             foreach (var name in Enum.GetValues(typeof(EBaudrate)))
@@ -69,6 +68,10 @@ namespace TOKS_lab1
                 {
                     startStopButton_Click(sender, e);
                 }
+            };
+            currentPortComboBox.DropDown += (sender, args) =>
+            {
+                RefreshPortList();
             };
         }
 
