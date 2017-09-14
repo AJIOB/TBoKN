@@ -43,11 +43,11 @@
             this.stopBitsLabel = new System.Windows.Forms.Label();
             this.parityLabel = new System.Windows.Forms.Label();
             this.flowControlLabel = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
-            this.comboBox5 = new System.Windows.Forms.ComboBox();
+            this.baudrateComboBox = new System.Windows.Forms.ComboBox();
+            this.dataBitsComboBox = new System.Windows.Forms.ComboBox();
+            this.stopBitsComboBox = new System.Windows.Forms.ComboBox();
+            this.parityComboBox = new System.Windows.Forms.ComboBox();
+            this.flowControlComboBox = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
@@ -129,11 +129,11 @@
             this.tableLayoutPanel4.Controls.Add(this.stopBitsLabel, 0, 3);
             this.tableLayoutPanel4.Controls.Add(this.parityLabel, 0, 4);
             this.tableLayoutPanel4.Controls.Add(this.flowControlLabel, 0, 5);
-            this.tableLayoutPanel4.Controls.Add(this.comboBox1, 1, 1);
-            this.tableLayoutPanel4.Controls.Add(this.comboBox2, 1, 2);
-            this.tableLayoutPanel4.Controls.Add(this.comboBox3, 1, 3);
-            this.tableLayoutPanel4.Controls.Add(this.comboBox4, 1, 4);
-            this.tableLayoutPanel4.Controls.Add(this.comboBox5, 1, 5);
+            this.tableLayoutPanel4.Controls.Add(this.baudrateComboBox, 1, 1);
+            this.tableLayoutPanel4.Controls.Add(this.dataBitsComboBox, 1, 2);
+            this.tableLayoutPanel4.Controls.Add(this.stopBitsComboBox, 1, 3);
+            this.tableLayoutPanel4.Controls.Add(this.parityComboBox, 1, 4);
+            this.tableLayoutPanel4.Controls.Add(this.flowControlComboBox, 1, 5);
             this.tableLayoutPanel4.Controls.Add(this.currentPortComboBox, 1, 0);
             this.tableLayoutPanel4.Location = new System.Drawing.Point(233, 3);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
@@ -250,60 +250,60 @@
             this.flowControlLabel.Text = "Flow control";
             this.flowControlLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // comboBox1
+            // baudrateComboBox
             // 
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.baudrateComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(103, 35);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(118, 21);
-            this.comboBox1.TabIndex = 1;
+            this.baudrateComboBox.FormattingEnabled = true;
+            this.baudrateComboBox.Location = new System.Drawing.Point(103, 35);
+            this.baudrateComboBox.Name = "baudrateComboBox";
+            this.baudrateComboBox.Size = new System.Drawing.Size(118, 21);
+            this.baudrateComboBox.TabIndex = 1;
             // 
-            // comboBox2
+            // dataBitsComboBox
             // 
-            this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.dataBitsComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(103, 67);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(118, 21);
-            this.comboBox2.TabIndex = 1;
+            this.dataBitsComboBox.FormattingEnabled = true;
+            this.dataBitsComboBox.Location = new System.Drawing.Point(103, 67);
+            this.dataBitsComboBox.Name = "dataBitsComboBox";
+            this.dataBitsComboBox.Size = new System.Drawing.Size(118, 21);
+            this.dataBitsComboBox.TabIndex = 1;
             // 
-            // comboBox3
+            // stopBitsComboBox
             // 
-            this.comboBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.stopBitsComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(103, 99);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(118, 21);
-            this.comboBox3.TabIndex = 1;
+            this.stopBitsComboBox.FormattingEnabled = true;
+            this.stopBitsComboBox.Location = new System.Drawing.Point(103, 99);
+            this.stopBitsComboBox.Name = "stopBitsComboBox";
+            this.stopBitsComboBox.Size = new System.Drawing.Size(118, 21);
+            this.stopBitsComboBox.TabIndex = 1;
             // 
-            // comboBox4
+            // parityComboBox
             // 
-            this.comboBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.parityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(103, 131);
-            this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(118, 21);
-            this.comboBox4.TabIndex = 1;
+            this.parityComboBox.FormattingEnabled = true;
+            this.parityComboBox.Location = new System.Drawing.Point(103, 131);
+            this.parityComboBox.Name = "parityComboBox";
+            this.parityComboBox.Size = new System.Drawing.Size(118, 21);
+            this.parityComboBox.TabIndex = 1;
             // 
-            // comboBox5
+            // flowControlComboBox
             // 
-            this.comboBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.flowControlComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBox5.FormattingEnabled = true;
-            this.comboBox5.Location = new System.Drawing.Point(103, 163);
-            this.comboBox5.Name = "comboBox5";
-            this.comboBox5.Size = new System.Drawing.Size(118, 21);
-            this.comboBox5.TabIndex = 1;
+            this.flowControlComboBox.FormattingEnabled = true;
+            this.flowControlComboBox.Location = new System.Drawing.Point(103, 163);
+            this.flowControlComboBox.Name = "flowControlComboBox";
+            this.flowControlComboBox.Size = new System.Drawing.Size(118, 21);
+            this.flowControlComboBox.TabIndex = 1;
             // 
             // Form1
             // 
@@ -338,11 +338,11 @@
         private System.Windows.Forms.Label stopBitsLabel;
         private System.Windows.Forms.Label parityLabel;
         private System.Windows.Forms.Label flowControlLabel;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.ComboBox comboBox3;
-        private System.Windows.Forms.ComboBox comboBox4;
-        private System.Windows.Forms.ComboBox comboBox5;
+        private System.Windows.Forms.ComboBox baudrateComboBox;
+        private System.Windows.Forms.ComboBox dataBitsComboBox;
+        private System.Windows.Forms.ComboBox stopBitsComboBox;
+        private System.Windows.Forms.ComboBox parityComboBox;
+        private System.Windows.Forms.ComboBox flowControlComboBox;
     }
 }
 
