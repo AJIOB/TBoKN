@@ -42,19 +42,22 @@ namespace TOKS_lab1
             }
             dataBitsComboBox.SelectedIndex = 3;
 
-            foreach (var name in Enum.GetNames(typeof(StopBits)))
+            foreach (var name in Enum.GetValues(typeof(StopBits)))
             {
-                stopBitsComboBox.Items.Add(name);
+                if (!name.Equals(StopBits.None))
+                {
+                    stopBitsComboBox.Items.Add(name);
+                }
             }
             stopBitsComboBox.SelectedIndex = 0;
 
-            foreach (var name in Enum.GetNames(typeof(Parity)))
+            foreach (var name in Enum.GetValues(typeof(Parity)))
             {
                 parityComboBox.Items.Add(name);
             }
             parityComboBox.SelectedIndex = 0;
 
-            foreach (var name in Enum.GetNames(typeof(Parity)))
+            foreach (var name in Enum.GetValues(typeof(Parity)))
             {
                 flowControlComboBox.Items.Add(name);
             }
@@ -97,7 +100,8 @@ namespace TOKS_lab1
                 try
                 {
                     serialPort = new SerialPort((String) currentPortComboBox.SelectedItem,
-                        (int) (EBaudrate) baudrateComboBox.SelectedItem);
+                        (int) (EBaudrate) baudrateComboBox.SelectedItem, (Parity) parityComboBox.SelectedItem,
+                        (int) (EDataBits) dataBitsComboBox.SelectedItem, (StopBits) stopBitsComboBox.SelectedItem);
                     serialPort.Open();
                 }
                 catch
