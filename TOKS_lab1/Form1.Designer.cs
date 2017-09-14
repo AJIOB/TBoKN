@@ -202,6 +202,7 @@
             this.baudrateComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.baudrateComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.baudrateComboBox.FormattingEnabled = true;
             this.baudrateComboBox.Location = new System.Drawing.Point(105, 36);
             this.baudrateComboBox.Name = "baudrateComboBox";
@@ -213,6 +214,7 @@
             this.dataBitsComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataBitsComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.dataBitsComboBox.FormattingEnabled = true;
             this.dataBitsComboBox.Location = new System.Drawing.Point(105, 69);
             this.dataBitsComboBox.Name = "dataBitsComboBox";
@@ -224,6 +226,7 @@
             this.stopBitsComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.stopBitsComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.stopBitsComboBox.FormattingEnabled = true;
             this.stopBitsComboBox.Location = new System.Drawing.Point(105, 102);
             this.stopBitsComboBox.Name = "stopBitsComboBox";
@@ -235,6 +238,7 @@
             this.parityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.parityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.parityComboBox.FormattingEnabled = true;
             this.parityComboBox.Location = new System.Drawing.Point(105, 135);
             this.parityComboBox.Name = "parityComboBox";
@@ -246,6 +250,7 @@
             this.flowControlComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowControlComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.flowControlComboBox.FormattingEnabled = true;
             this.flowControlComboBox.Location = new System.Drawing.Point(105, 168);
             this.flowControlComboBox.Name = "flowControlComboBox";
@@ -257,6 +262,7 @@
             this.currentPortComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.currentPortComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.currentPortComboBox.FormattingEnabled = true;
             this.currentPortComboBox.Location = new System.Drawing.Point(105, 3);
             this.currentPortComboBox.Name = "currentPortComboBox";

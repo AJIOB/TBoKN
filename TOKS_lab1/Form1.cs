@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TOKS_lab1.Enums;
 
 namespace TOKS_lab1
 {
@@ -27,6 +29,44 @@ namespace TOKS_lab1
         {
             RefreshPortList();
             RefreshViewAsRequred();
+
+            foreach (var name in Enum.GetValues(typeof(EBaudrate)))
+            {
+                baudrateComboBox.Items.Add((int) name);
+            }
+            baudrateComboBox.SelectedIndex = 1;
+
+            foreach (var name in Enum.GetValues(typeof(EDataBits)))
+            {
+                dataBitsComboBox.Items.Add((int) name);
+            }
+            dataBitsComboBox.SelectedIndex = 3;
+
+            foreach (var name in Enum.GetNames(typeof(StopBits)))
+            {
+                stopBitsComboBox.Items.Add(name);
+            }
+            stopBitsComboBox.SelectedIndex = 0;
+
+            foreach (var name in Enum.GetNames(typeof(Parity)))
+            {
+                parityComboBox.Items.Add(name);
+            }
+            parityComboBox.SelectedIndex = 0;
+
+            foreach (var name in Enum.GetNames(typeof(Parity)))
+            {
+                flowControlComboBox.Items.Add(name);
+            }
+            flowControlComboBox.SelectedIndex = 0;
+
+            FormClosed += (sender, e) =>
+            {
+                if (serialPort != null)
+                {
+                    startStopButton_Click(sender, e);
+                }
+            };
         }
 
         private void RefreshPortList()
@@ -48,11 +88,25 @@ namespace TOKS_lab1
         {
             if (serialPort != null)
             {
-                //TODO
+                serialPort.Close();
+                serialPort = null;
             }
             else
             {
                 //TODO
+                try
+                {
+                    serialPort = new SerialPort((String) currentPortComboBox.SelectedItem,
+                        (int) (EBaudrate) baudrateComboBox.SelectedItem);
+                    serialPort.Open();
+                }
+                catch
+                {
+                    MessageBox.Show(@"Cannot open port with selected mode", @"Oops, we have an error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    serialPort = null;
+                }
             }
 
             RefreshViewAsRequred();
@@ -66,9 +120,9 @@ namespace TOKS_lab1
             dataBitsComboBox.Enabled = !isStarted;
             stopBitsComboBox.Enabled = !isStarted;
             parityComboBox.Enabled = !isStarted;
-            flowControlComboBox.Enabled = !isStarted;
+            flowControlComboBox.Enabled = false; //TODO: fix
             inputTextBox.Enabled = isStarted;
-            
+
             startStopButton.Text = (isStarted ? stopString : startString);
         }
     }
