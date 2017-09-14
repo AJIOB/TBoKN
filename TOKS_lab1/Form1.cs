@@ -106,6 +106,10 @@ namespace TOKS_lab1
                         (int) (EBaudrate) baudrateComboBox.SelectedItem, (Parity) parityComboBox.SelectedItem,
                         (int) (EDataBits) dataBitsComboBox.SelectedItem, (StopBits) stopBitsComboBox.SelectedItem);
                     serialPort.Open();
+                    serialPort.DataReceived += delegate
+                    {
+                        outputTextBox.Text += (char) serialPort.ReadChar();
+                    };
                 }
                 catch
                 {
