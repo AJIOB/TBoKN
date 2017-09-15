@@ -106,7 +106,6 @@ namespace TOKS_lab1
             }
             else
             {
-                //TODO
                 try
                 {
                     serialPort = new SerialPort((String) currentPortComboBox.SelectedItem,
@@ -115,7 +114,7 @@ namespace TOKS_lab1
                     serialPort.Open();
                     serialPort.DataReceived += delegate
                     {
-                        outputTextBox.Text += (char) serialPort.ReadChar();
+                        outputTextBox.AppendText(((char) serialPort.ReadChar()).ToString());
                     };
                 }
                 catch

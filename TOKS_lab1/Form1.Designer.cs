@@ -309,8 +309,10 @@
             this.outputTextBox.Multiline = true;
             this.outputTextBox.Name = "outputTextBox";
             this.outputTextBox.ReadOnly = true;
+            this.outputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.outputTextBox.Size = new System.Drawing.Size(221, 170);
             this.outputTextBox.TabIndex = 1;
+            this.outputTextBox.WordWrap = false;
             // 
             // MainWindow
             // 
