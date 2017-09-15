@@ -86,8 +86,15 @@ namespace TOKS_lab1
 
         private void inputTextBox_TextChanged(object sender, EventArgs e)
         {
-            serialPort.Write(inputTextBox.Text);
-            inputTextBox.Text = "";
+            try
+            {
+                serialPort.Write(inputTextBox.Text);
+                inputTextBox.Text = "";
+            }
+            catch
+            {
+                ShowErrorBox(@"Cannot write to port");
+            }
         }
 
         private void startStopButton_Click(object sender, EventArgs e)
@@ -113,9 +120,7 @@ namespace TOKS_lab1
                 }
                 catch
                 {
-                    MessageBox.Show(@"Cannot open port with selected mode", @"Oops, we have an error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+                    ShowErrorBox(@"Cannot open port with selected mode");
                     serialPort = null;
                 }
             }
@@ -135,6 +140,13 @@ namespace TOKS_lab1
             inputTextBox.Enabled = isStarted;
 
             startStopButton.Text = (isStarted ? stopString : startString);
+        }
+
+        private void ShowErrorBox(String errorText)
+        {
+            MessageBox.Show(errorText, @"Oops, we have an error",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
         }
     }
 }
