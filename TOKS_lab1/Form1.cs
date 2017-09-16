@@ -114,7 +114,7 @@ namespace TOKS_lab1
                     serialPort.Open();
                     serialPort.DataReceived += delegate
                     {
-                        outputTextBox.AppendText(((char) serialPort.ReadChar()).ToString());
+                        this.Invoke((MethodInvoker)(delegate() { outputTextBox.AppendText(serialPort.ReadExisting()); }));
                     };
                 }
                 catch
