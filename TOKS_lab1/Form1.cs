@@ -70,10 +70,7 @@ namespace TOKS_lab1
                     _serialPortCommunicator.Close();
                 }
             };
-            currentPortComboBox.DropDown += (sender, args) =>
-            {
-                RefreshPortList();
-            };
+            currentPortComboBox.DropDown += (sender, args) => { RefreshPortList(); };
         }
 
         private void RefreshPortList()
@@ -110,11 +107,14 @@ namespace TOKS_lab1
                 {
                     _serialPortCommunicator.Open((string) currentPortComboBox.SelectedItem,
                         (EBaudrate) baudrateComboBox.SelectedItem, (Parity) parityComboBox.SelectedItem,
-                        (EDataBits) dataBitsComboBox.SelectedItem, (StopBits) stopBitsComboBox.SelectedItem);
-                    serialPort.DataReceived += delegate
-                    {
-                        this.Invoke((MethodInvoker) (delegate() { outputTextBox.AppendText(_serialPortCommunicator.ReadExisting()); }));
-                    };
+                        (EDataBits) dataBitsComboBox.SelectedItem, (StopBits) stopBitsComboBox.SelectedItem,
+                        delegate
+                        {
+                            this.Invoke((MethodInvoker) (delegate()
+                            {
+                                outputTextBox.AppendText(_serialPortCommunicator.ReadExisting());
+                            }));
+                        });
                 }
                 catch
                 {

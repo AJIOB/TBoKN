@@ -1,4 +1,5 @@
-﻿using System.IO.Ports;
+﻿using System;
+using System.IO.Ports;
 using TOKS_lab1.Enums;
 
 namespace TOKS_lab1.backend
@@ -6,6 +7,8 @@ namespace TOKS_lab1.backend
     public class SerialPortCommunicator
     {
         private SerialPort _serialPort;
+
+        public delegate void ReceivedEventHandler(object sender, EventArgs e);
 
         public bool IsOpen => _serialPort != null;
 
@@ -36,12 +39,16 @@ namespace TOKS_lab1.backend
         /// <param name="parity">Parity</param>
         /// <param name="dataBits">Number of data bits</param>
         /// <param name="stopBits">Number of stop bits</param>
-        public void Open(string portName, EBaudrate baudRate, Parity parity, EDataBits dataBits, StopBits stopBits)
+        /// <param name="receivedEventHandler">Callback to run to when something is received</param>
+        public void Open(string portName, EBaudrate baudRate, Parity parity, EDataBits dataBits, StopBits stopBits,
+            ReceivedEventHandler receivedEventHandler)
         {
             if (IsOpen) return;
             _serialPort = new SerialPort(portName, (int) baudRate, parity, (int) dataBits, stopBits);
             _serialPort.Open();
-            
+            if (receivedEventHandler != null)
+                _serialPort.DataReceived +=
+                    delegate(object sender, SerialDataReceivedEventArgs args) { receivedEventHandler(sender, args); };
         }
 
         /// <summary>
