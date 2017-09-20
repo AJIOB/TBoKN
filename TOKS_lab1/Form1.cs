@@ -9,13 +9,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TOKS_lab1.backend;
 using TOKS_lab1.Enums;
 
 namespace TOKS_lab1
 {
     public partial class MainWindow : Form
     {
-        private SerialPort serialPort = null;
+        private readonly SerialPortCommunicator _serialPortCommunicator = new SerialPortCommunicator();
         private String startString = "Start";
         private String stopString = "Stop";
 
@@ -64,9 +65,9 @@ namespace TOKS_lab1
 
             FormClosed += (sender, e) =>
             {
-                if (serialPort != null)
+                if (_serialPortCommunicator.IsOpen)
                 {
-                    startStopButton_Click(sender, e);
+                    _serialPortCommunicator.Close();
                 }
             };
             currentPortComboBox.DropDown += (sender, args) =>
@@ -88,7 +89,7 @@ namespace TOKS_lab1
         {
             try
             {
-                serialPort.Write(inputTextBox.Text);
+                _serialPortCommunicator.Send(inputTextBox.Text);
                 inputTextBox.Text = "";
             }
             catch
@@ -99,28 +100,25 @@ namespace TOKS_lab1
 
         private void startStopButton_Click(object sender, EventArgs e)
         {
-            if (serialPort != null)
+            if (_serialPortCommunicator.IsOpen)
             {
-                serialPort.Close();
-                serialPort = null;
+                _serialPortCommunicator.Close();
             }
             else
             {
                 try
                 {
-                    serialPort = new SerialPort((String) currentPortComboBox.SelectedItem,
-                        (int) (EBaudrate) baudrateComboBox.SelectedItem, (Parity) parityComboBox.SelectedItem,
-                        (int) (EDataBits) dataBitsComboBox.SelectedItem, (StopBits) stopBitsComboBox.SelectedItem);
-                    serialPort.Open();
+                    _serialPortCommunicator.Open((string) currentPortComboBox.SelectedItem,
+                        (EBaudrate) baudrateComboBox.SelectedItem, (Parity) parityComboBox.SelectedItem,
+                        (EDataBits) dataBitsComboBox.SelectedItem, (StopBits) stopBitsComboBox.SelectedItem);
                     serialPort.DataReceived += delegate
                     {
-                        this.Invoke((MethodInvoker)(delegate() { outputTextBox.AppendText(serialPort.ReadExisting()); }));
+                        this.Invoke((MethodInvoker) (delegate() { outputTextBox.AppendText(_serialPortCommunicator.ReadExisting()); }));
                     };
                 }
                 catch
                 {
                     ShowErrorBox(@"Cannot open port with selected mode");
-                    serialPort = null;
                 }
             }
 
@@ -129,13 +127,13 @@ namespace TOKS_lab1
 
         private void RefreshViewAsRequred()
         {
-            bool isStarted = (serialPort != null);
+            bool isStarted = _serialPortCommunicator.IsOpen;
             currentPortComboBox.Enabled = !isStarted;
             baudrateComboBox.Enabled = !isStarted;
             dataBitsComboBox.Enabled = !isStarted;
             stopBitsComboBox.Enabled = !isStarted;
             parityComboBox.Enabled = !isStarted;
-            flowControlComboBox.Enabled = false; //TODO: fix
+            flowControlComboBox.Enabled = false;
             inputTextBox.Enabled = isStarted;
 
             startStopButton.Text = (isStarted ? stopString : startString);
