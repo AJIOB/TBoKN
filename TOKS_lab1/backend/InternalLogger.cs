@@ -15,7 +15,7 @@ namespace TOKS_lab1.backend
             {
                 if (_isFirstRun)
                 {
-                    log4net.Config.DOMConfigurator.Configure();
+                    log4net.Config.XmlConfigurator.Configure();
                     _isFirstRun = false;
                 }
                 return LogManager.GetLogger(typeof(Program));
