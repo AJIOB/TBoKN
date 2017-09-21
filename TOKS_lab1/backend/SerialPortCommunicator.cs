@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace TOKS_lab1.backend
     public class SerialPortCommunicator
     {
         private SerialPort _serialPort;
+        private const int BitsInByte = 8;
         private const byte StartStopByte = 0x7E;
         private const byte StartStopReplaceTo = 0x7C;
         private const bool EqualStartStopByteWhenReplacing = false;
@@ -128,6 +130,32 @@ namespace TOKS_lab1.backend
         private IEnumerable<byte> ParsePacket(IEnumerable<byte> packet)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Converts byte array to bool (bit) array 
+        /// </summary>
+        /// <param name="data">Data to convert</param>
+        /// <returns>Bit array</returns>
+        private IEnumerable<bool> BytesToBools(IEnumerable<byte> data)
+        {
+            var bitArray = new BitArray(data.ToArray());
+            var bits = new bool[bitArray.Length];
+            bitArray.CopyTo(bits, 0);
+            return bits;
+        }
+
+        /// <summary>
+        /// Converts bool (bit) array to byte array 
+        /// </summary>
+        /// <param name="data">Data to convert</param>
+        /// <returns>Byte array</returns>
+        private IEnumerable<byte> BoolsToBytes(IEnumerable<bool> data)
+        {
+            var bitArray = new BitArray(data.ToArray());
+            var bytes = new byte[(bitArray.Length + BitsInByte - 1) / BitsInByte];
+            bitArray.CopyTo(bytes, 0);
+            return bytes;
         }
     }
 }
