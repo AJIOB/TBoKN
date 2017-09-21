@@ -27,7 +27,7 @@ namespace TOKS_lab1.backend
         /// <param name="s">Sending info</param>
         public void Send(string s)
         {
-            _serialPort.Write(Encoding.UTF8.GetString(GeneratePacket(Encoding.UTF8.GetBytes(s).ToArray()).ToArray()));
+            _serialPort.Write(Encoding.ASCII.GetString(GeneratePacket(Encoding.UTF8.GetBytes(s).ToArray()).ToArray()));
         }
 
         /// <summary>
@@ -66,9 +66,8 @@ namespace TOKS_lab1.backend
         /// <returns>Existing string</returns>
         public string ReadExisting()
         {
-            var data = ParsePacket(Encoding.UTF8.GetBytes(_serialPort.ReadExisting()));
-            return data != null ? Encoding.UTF8.GetString(data.ToArray()) : ""; 
-                
+            var data = ParsePacket(Encoding.ASCII.GetBytes(_serialPort.ReadExisting()));
+            return data != null ? Encoding.UTF8.GetString(data.ToArray()) : "";
         }
 
         /// <summary>
@@ -106,7 +105,6 @@ namespace TOKS_lab1.backend
         /// </summary>
         /// <param name="data">Data to wrap</param>
         /// <returns>Wrapped string</returns>
-        /// <exception cref="NotImplementedException"></exception>
         private IEnumerable<byte> WrapAddressMetadata(IEnumerable<byte> data)
         {
             throw new NotImplementedException();
