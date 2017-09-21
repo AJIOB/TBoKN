@@ -108,11 +108,46 @@ namespace TOKS_lab1.backend
         /// <summary>
         /// Decode bit array to byte array with deletinig bit staffing
         /// </summary>
-        /// <param name="inputBytes">Bits to decode with bit staffing</param>
+        /// <param name="inputBits">Bits to decode with bit staffing</param>
         /// <returns>Decoded input value</returns>
-        private IEnumerable<byte> Decode(IEnumerable<bool> inputBytes)
+        private IEnumerable<byte> Decode(IEnumerable<bool> inputBits)
         {
-            throw new NotImplementedException();
+            var res = new List<byte>();
+            var buffer = new List<bool>();
+
+            foreach (var b in inputBits)
+            {
+                buffer.Add(b);
+                if (buffer.Count < BitsInByte)
+                {
+                    continue;
+                }
+
+                var bitArray = new BitArray(buffer.ToArray());
+
+                if (bitArray.Length != BitsInByte)
+                {
+                    //Escape decoding
+                    res.Add(
+                        bitArray[BitsInByte] == EqualStartStopByteWhenReplacing ? StartStopByte : StartStopReplaceTo);
+                }
+                else
+                {
+                    var byteBuff = new byte[1];
+                    bitArray.CopyTo(byteBuff, 0);
+                    if (byteBuff[0] == StartStopReplaceTo)
+                    {
+                        //Escape was found. Need one more bit to decode
+                        continue;
+                    }
+                    
+                    //simple byte was found
+                    res.Add(byteBuff[0]);                    
+                }
+                res.Clear();
+            }
+
+            return res;
         }
 
         /// <summary>
