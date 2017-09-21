@@ -7,6 +7,19 @@ namespace TOKS_lab1.backend
     /// </summary>
     public static class InternalLogger
     {
-        public static readonly ILog Log = LogManager.GetLogger(typeof(Program));
+        private static bool _isFirstRun = true;
+
+        public static ILog Log
+        {
+            get
+            {
+                if (_isFirstRun)
+                {
+                    log4net.Config.DOMConfigurator.Configure();
+                    _isFirstRun = false;
+                }
+                return LogManager.GetLogger(typeof(Program));
+            }
+        }
     }
 }

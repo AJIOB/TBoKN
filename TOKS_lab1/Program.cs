@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using TOKS_lab1.backend;
 
 namespace TOKS_lab1
 {
@@ -14,9 +12,11 @@ namespace TOKS_lab1
         [STAThread]
         static void Main()
         {
+            InternalLogger.Log.Info("Application was started");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainWindow());
+            InternalLogger.Log.Info("Application was finished");
         }
     }
 }
