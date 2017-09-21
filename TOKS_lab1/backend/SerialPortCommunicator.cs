@@ -212,7 +212,7 @@ namespace TOKS_lab1.backend
         /// <returns>Data from packet if packet addressed to me, else return null</returns>
         private IEnumerable<byte> ParsePacket(IEnumerable<byte> packet)
         {
-            var listedPackage = packet as IList<byte> ?? packet.ToList();
+            var listedPackage = packet.ToList();
             if (listedPackage.First() != StartStopByte)
             {
                 throw new Exception("Cannot find start byte");

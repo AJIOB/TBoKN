@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TOKS_lab1.backend;
 using TOKS_lab1.Enums;
@@ -65,7 +57,7 @@ namespace TOKS_lab1
 
             myIdNumeric.Text = _serialPortCommunicator.MyId.ToString();
             partnerIdNumeric.Text = _serialPortCommunicator.PartnerId.ToString();
-            
+
             FormClosed += (sender, e) =>
             {
                 if (_serialPortCommunicator.IsOpen)
@@ -115,15 +107,22 @@ namespace TOKS_lab1
                         (EDataBits) dataBitsComboBox.SelectedItem, (StopBits) stopBitsComboBox.SelectedItem,
                         delegate
                         {
-                            this.Invoke((MethodInvoker) (delegate()
+                            try
                             {
-                                outputTextBox.AppendText(_serialPortCommunicator.ReadExisting());
-                            }));
+                                this.Invoke((MethodInvoker) (delegate()
+                                {
+                                    outputTextBox.AppendText(_serialPortCommunicator.ReadExisting());
+                                }));
+                            }
+                            catch (Exception exception)
+                            {
+                                ShowErrorBox(exception.Message);
+                            }
                         });
                 }
                 catch
                 {
-                    ShowErrorBox(@"Cannot open port with selected mode");
+                    ShowErrorBox(@"Cannot open selected port with selected configuration");
                 }
             }
 
@@ -158,7 +157,7 @@ namespace TOKS_lab1
         {
             _serialPortCommunicator.MyId = byte.Parse(myIdNumeric.Text);
         }
-        
+
         /// <summary>
         /// Update partnerId property in communicator class
         /// </summary>
