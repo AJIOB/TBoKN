@@ -63,6 +63,9 @@ namespace TOKS_lab1
             }
             flowControlComboBox.SelectedIndex = 0;
 
+            myIdNumeric.Text = _serialPortCommunicator.MyId.ToString();
+            partnerIdNumeric.Text = _serialPortCommunicator.PartnerId.ToString();
+            
             FormClosed += (sender, e) =>
             {
                 if (_serialPortCommunicator.IsOpen)
@@ -71,6 +74,8 @@ namespace TOKS_lab1
                 }
             };
             currentPortComboBox.DropDown += (sender, args) => { RefreshPortList(); };
+            myIdNumeric.ValueChanged += (sender, args) => { UpdateMyIdValue(); };
+            partnerIdNumeric.ValueChanged += (sender, args) => { UpdatePartnerIdValue(); };
         }
 
         private void RefreshPortList()
@@ -144,6 +149,22 @@ namespace TOKS_lab1
             MessageBox.Show(errorText, @"Oops, we have an error",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
+        }
+
+        /// <summary>
+        /// Update myId property in communicator class
+        /// </summary>
+        private void UpdateMyIdValue()
+        {
+            _serialPortCommunicator.MyId = byte.Parse(myIdNumeric.Text);
+        }
+        
+        /// <summary>
+        /// Update partnerId property in communicator class
+        /// </summary>
+        private void UpdatePartnerIdValue()
+        {
+            _serialPortCommunicator.PartnerId = byte.Parse(partnerIdNumeric.Text);
         }
     }
 }
