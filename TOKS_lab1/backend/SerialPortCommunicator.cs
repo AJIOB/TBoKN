@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO.Ports;
+using System.Linq;
+using System.Text;
 using TOKS_lab1.Enums;
 
 namespace TOKS_lab1.backend
@@ -25,7 +27,7 @@ namespace TOKS_lab1.backend
         /// <param name="s">Sending info</param>
         public void Send(string s)
         {
-            _serialPort.Write(s);
+            _serialPort.Write(Encoding.UTF8.GetString(GeneratePacket(Encoding.UTF8.GetBytes(s).ToArray()).ToArray()));
         }
 
         /// <summary>
@@ -64,7 +66,9 @@ namespace TOKS_lab1.backend
         /// <returns>Existing string</returns>
         public string ReadExisting()
         {
-            return _serialPort.ReadExisting();
+            var data = ParsePacket(Encoding.UTF8.GetBytes(_serialPort.ReadExisting()));
+            return data != null ? Encoding.UTF8.GetString(data.ToArray()) : ""; 
+                
         }
 
         /// <summary>
