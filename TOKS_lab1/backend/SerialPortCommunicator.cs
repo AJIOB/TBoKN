@@ -13,7 +13,7 @@ namespace TOKS_lab1.backend
         private SerialPort _serialPort;
         private const int BitsInByte = 8;
         private const byte StartStopByte = 0x7E;
-        private const byte StartStopReplaceTo = 0x7C;
+        private const byte StartStopReplaceTo = 0x7D;
         private const bool EqualStartStopByteWhenReplacing = false;
 
         public byte MyId { get; set; } = 0;
@@ -79,7 +79,30 @@ namespace TOKS_lab1.backend
         /// <returns>Converted input value</returns>
         private IEnumerable<bool> Encode(IEnumerable<byte> inputBytes)
         {
-            throw new NotImplementedException();
+            var res = new List<bool>();
+            var buffer = new bool[BitsInByte];
+
+            foreach (var b in inputBytes)
+            {
+                var bitArray = (b == StartStopByte)
+                    ? new BitArray(new[] {StartStopReplaceTo})
+                    : new BitArray(new[] {b});
+
+                if (bitArray.Length != BitsInByte)
+                {
+                    throw new Exception(
+                        $"Cannot encode byte. Bad length. Length was {bitArray.Length}, requred {BitsInByte}");
+                }
+
+                bitArray.CopyTo(buffer, 0);
+                res.AddRange(buffer);
+                if (b == StartStopByte || b == StartStopReplaceTo)
+                {
+                    res.Add((b != StartStopByte) ^ EqualStartStopByteWhenReplacing);
+                }
+            }
+
+            return res;
         }
 
         /// <summary>
@@ -114,11 +137,11 @@ namespace TOKS_lab1.backend
             {
                 return new byte[0];
             }
-            
+
             modifiedData.RemoveRange(0, 2);
             return modifiedData;
         }
-        
+
         /// <summary>
         /// Wrap address metadata to data
         /// </summary>
@@ -127,10 +150,10 @@ namespace TOKS_lab1.backend
         private IEnumerable<byte> WrapAddressMetadata(IEnumerable<byte> data)
         {
             var modifiedData = data.ToList();
-            
+
             modifiedData.Insert(0, MyId);
             modifiedData.Insert(0, PartnerId);
-            
+
             return modifiedData;
         }
 
@@ -166,7 +189,7 @@ namespace TOKS_lab1.backend
 
             listedPackage.RemoveAt(listedPackage.Count - 1);
             listedPackage.RemoveAt(0);
-            
+
             return DeleteAddressMetadata(Decode(BytesToBools(listedPackage)));
         }
 
