@@ -103,6 +103,16 @@ namespace TOKS_lab1.backend
         }
 
         /// <summary>
+        /// Delete address metadata from data
+        /// </summary>
+        /// <param name="data">Data to delete address metadata</param>
+        /// <returns>String without address metadata</returns>
+        private IEnumerable<byte> DeleteAddressMetadata(IEnumerable<byte> data)
+        {
+            throw new NotImplementedException();
+        }
+        
+        /// <summary>
         /// Wrap address metadata to data
         /// </summary>
         /// <param name="data">Data to wrap</param>
@@ -119,7 +129,10 @@ namespace TOKS_lab1.backend
         /// <returns>Generated packet</returns>
         private IEnumerable<byte> GeneratePacket(IEnumerable<byte> data)
         {
-            throw new NotImplementedException();
+            var encodedMeta = BoolsToBytes(Encode(WrapAddressMetadata(data))).ToList();
+            encodedMeta.Insert(0, StartStopByte);
+            encodedMeta.Add(StartStopByte);
+            return encodedMeta;
         }
 
         /// <summary>
@@ -129,7 +142,20 @@ namespace TOKS_lab1.backend
         /// <returns>Data from packet if packet addressed to me, else return null</returns>
         private IEnumerable<byte> ParsePacket(IEnumerable<byte> packet)
         {
-            throw new NotImplementedException();
+            var listedPackage = packet as IList<byte> ?? packet.ToList();
+            if (listedPackage.First() != StartStopByte)
+            {
+                throw new Exception("Cannot find start byte");
+            }
+            if (listedPackage.Last() != StartStopByte)
+            {
+                throw new Exception("Cannot find stop byte");
+            }
+
+            listedPackage.RemoveAt(listedPackage.Count - 1);
+            listedPackage.RemoveAt(0);
+            
+            return DeleteAddressMetadata(Decode(BytesToBools(listedPackage)));
         }
 
         /// <summary>
