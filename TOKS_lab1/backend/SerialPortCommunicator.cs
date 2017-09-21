@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO.Ports;
 using TOKS_lab1.Enums;
 
@@ -7,6 +8,12 @@ namespace TOKS_lab1.backend
     public class SerialPortCommunicator
     {
         private SerialPort _serialPort;
+        private const byte StartStopByte = 0x7E;
+        private const byte StartStopReplaceTo = 0x7C;
+        private const bool EqualStartStopByteWhenReplacing = false;
+
+        public byte MyId { get; set; } = 0;
+        public byte PartnerId { get; set; } = 0;
 
         public delegate void ReceivedEventHandler(object sender, EventArgs e);
 
@@ -58,6 +65,67 @@ namespace TOKS_lab1.backend
         public string ReadExisting()
         {
             return _serialPort.ReadExisting();
+        }
+
+        /// <summary>
+        /// Encode byte array to bit array with adding bit staffing
+        /// </summary>
+        /// <param name="inputBytes">Bytes to convert with bit staffing</param>
+        /// <returns>Converted input value</returns>
+        private IEnumerable<bool> Encode(IEnumerable<byte> inputBytes)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Decode bit array to byte array with deletinig bit staffing
+        /// </summary>
+        /// <param name="inputBytes">Bits to decode with bit staffing</param>
+        /// <returns>Decoded input value</returns>
+        private IEnumerable<byte> Decode(IEnumerable<bool> inputBytes)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Check is packet to me
+        /// </summary>
+        /// <param name="packet">Packet to check</param>
+        /// <returns>True if packet addressed to me, else false</returns>
+        private bool IsPacketToMe(IEnumerable<byte> packet)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Wrap address metadata to data
+        /// </summary>
+        /// <param name="data">Data to wrap</param>
+        /// <returns>Wrapped string</returns>
+        /// <exception cref="NotImplementedException"></exception>
+        private IEnumerable<byte> WrapAddressMetadata(IEnumerable<byte> data)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Generate packet from data
+        /// </summary>
+        /// <param name="data">Data to add to packet</param>
+        /// <returns>Generated packet</returns>
+        private IEnumerable<byte> GeneratePacket(IEnumerable<byte> data)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Parse packet
+        /// </summary>
+        /// <param name="packet">Packet to parse</param>
+        /// <returns>Data from packet if packet addressed to me, else return null</returns>
+        private IEnumerable<byte> ParsePacket(IEnumerable<byte> packet)
+        {
+            throw new NotImplementedException();
         }
     }
 }
