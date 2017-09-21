@@ -99,17 +99,24 @@ namespace TOKS_lab1.backend
         /// <returns>True if packet addressed to me, else false</returns>
         private bool IsPacketToMe(IEnumerable<byte> packet)
         {
-            throw new NotImplementedException();
+            return (packet.First() == MyId);
         }
 
         /// <summary>
         /// Delete address metadata from data
         /// </summary>
         /// <param name="data">Data to delete address metadata</param>
-        /// <returns>String without address metadata</returns>
+        /// <returns>String without address metadata if data adressed to myId, else empty array</returns>
         private IEnumerable<byte> DeleteAddressMetadata(IEnumerable<byte> data)
         {
-            throw new NotImplementedException();
+            var modifiedData = data.ToList();
+            if (!IsPacketToMe(modifiedData))
+            {
+                return new byte[0];
+            }
+            
+            modifiedData.RemoveRange(0, 2);
+            return modifiedData;
         }
         
         /// <summary>
@@ -119,7 +126,12 @@ namespace TOKS_lab1.backend
         /// <returns>Wrapped string</returns>
         private IEnumerable<byte> WrapAddressMetadata(IEnumerable<byte> data)
         {
-            throw new NotImplementedException();
+            var modifiedData = data.ToList();
+            
+            modifiedData.Insert(0, MyId);
+            modifiedData.Insert(0, PartnerId);
+            
+            return modifiedData;
         }
 
         /// <summary>
