@@ -19,7 +19,7 @@ namespace TOKS_lab1.backend
         private const byte BitStaffingAndMask = 0xFE;
         private const byte BitStaffingReplaceSymbol = 0x7F;
         private const byte GetLastBitMask = 0x01;
-        private string _receivedBuffer = "";
+        private readonly List<byte> _receivedBuffer = new List<byte>();
 
         public byte MyId { get; set; } = 0;
         public byte PartnerId { get; set; } = 0;
@@ -35,7 +35,8 @@ namespace TOKS_lab1.backend
         public void Send(string s)
         {
             InternalLogger.Log.Debug($"Sending string: \"{s}\"");
-            _serialPort.Write(Encoding.ASCII.GetString(GeneratePacket(Encoding.UTF8.GetBytes(s).ToArray()).ToArray()));
+            var dataToSend = GeneratePacket(Encoding.UTF8.GetBytes(s).ToArray()).ToArray();
+            _serialPort.Write(dataToSend, 0, dataToSend.Length);
         }
 
         /// <summary>
@@ -66,6 +67,7 @@ namespace TOKS_lab1.backend
             if (receivedEventHandler != null)
                 _serialPort.DataReceived +=
                     delegate(object sender, SerialDataReceivedEventArgs args) { receivedEventHandler(sender, args); };
+            _receivedBuffer.Clear();
         }
 
         /// <summary>
@@ -74,21 +76,37 @@ namespace TOKS_lab1.backend
         /// <returns>Existing string</returns>
         public string ReadExisting()
         {
-            _receivedBuffer += _serialPort.ReadExisting();
+            //Reading data from serial port
+            while (_serialPort.BytesToRead > 0)
+            {
+                var received = _serialPort.ReadByte();
+                if (received < 0)
+                {
+                    InternalLogger.Log.Info("End of the stream was read");
+                    break;
+                }
+                _receivedBuffer.Add((byte)received);
+            }
+            
             IEnumerable<byte> data = null;
             bool isStopSymbolFind = true;
             try
             {
-                data = ParsePacket(Encoding.ASCII.GetBytes(_receivedBuffer));
+                data = ParsePacket(_receivedBuffer);
             }
-            catch (CannotFindStopSymbolException e)
+            catch (CannotFindStopSymbolException)
             {
                 isStopSymbolFind = false;
+            }
+            catch (CannotFindStartSymbolException)
+            {
+                _receivedBuffer.Clear();
+                throw;
             }
 
             if (isStopSymbolFind)
             {
-                _receivedBuffer = "";
+                _receivedBuffer.Clear();
             }
             return data != null ? Encoding.UTF8.GetString(data.ToArray()) : "";
         }
