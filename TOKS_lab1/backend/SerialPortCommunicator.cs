@@ -14,8 +14,11 @@ namespace TOKS_lab1.backend
         private SerialPort _serialPort;
         private const int BitsInByte = 8;
         private const byte StartStopByte = 0x7E;
-        private const byte StartStopReplaceTo = 0x7D;
-        private const bool EqualStartStopByteWhenReplacing = false;
+
+        private const byte BitStaffingCheckMask = 0x7E;
+        private const byte BitStaffingAndMask = 0xFE;
+        private const byte BitStaffingReplaceSymbol = 0x7F;
+        private const byte GetLastBitMask = 0x01;
         private string _receivedBuffer = "";
 
         public byte MyId { get; set; } = 0;
@@ -87,7 +90,6 @@ namespace TOKS_lab1.backend
             {
                 _receivedBuffer = "";
             }
-            InternalLogger.Log.Debug($"Receiving: \"{data}\"");
             return data != null ? Encoding.UTF8.GetString(data.ToArray()) : "";
         }
 
@@ -103,9 +105,10 @@ namespace TOKS_lab1.backend
 
             foreach (var b in inputBytes)
             {
-                var bitArray = (b == StartStopByte)
-                    ? new BitArray(new[] {StartStopReplaceTo})
-                    : new BitArray(new[] {b});
+                var isFindByteToStuffing = (((b & BitStaffingAndMask) ^ BitStaffingCheckMask) == 0);
+                var bitArray = (isFindByteToStuffing
+                    ? new BitArray(new[] {BitStaffingReplaceSymbol})
+                    : new BitArray(new[] {b}));
 
                 if (bitArray.Length != BitsInByte)
                 {
@@ -115,9 +118,9 @@ namespace TOKS_lab1.backend
 
                 bitArray.CopyTo(buffer, 0);
                 res.AddRange(buffer);
-                if (b == StartStopByte || b == StartStopReplaceTo)
+                if (isFindByteToStuffing)
                 {
-                    res.Add((b != StartStopByte) ^ EqualStartStopByteWhenReplacing);
+                    res.Add((b & GetLastBitMask) == 1);
                 }
             }
 
@@ -147,21 +150,20 @@ namespace TOKS_lab1.backend
                 if (bitArray.Length != BitsInByte)
                 {
                     //Escape decoding
-                    res.Add(
-                        bitArray[BitsInByte] == EqualStartStopByteWhenReplacing ? StartStopByte : StartStopReplaceTo);
+                    res.Add((byte) ((BitStaffingReplaceSymbol & BitStaffingAndMask) | (b ? 0x1 : 0x0)));
                 }
                 else
                 {
                     var byteBuff = new byte[1];
                     bitArray.CopyTo(byteBuff, 0);
-                    if (byteBuff[0] == StartStopReplaceTo)
+                    if (byteBuff[0] == BitStaffingReplaceSymbol)
                     {
                         //Escape was found. Need one more bit to decode
                         continue;
                     }
-                    
+
                     //simple byte was found
-                    res.Add(byteBuff[0]);                    
+                    res.Add(byteBuff[0]);
                 }
                 buffer.Clear();
             }
