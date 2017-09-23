@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using TOKS_lab1.backend.exceptions;
 using TOKS_lab1.Enums;
 
 namespace TOKS_lab1.backend
@@ -90,8 +91,8 @@ namespace TOKS_lab1.backend
 
                 if (bitArray.Length != BitsInByte)
                 {
-                    throw new Exception(
-                        $"Cannot encode byte. Bad length. Length was {bitArray.Length}, requred {BitsInByte}");
+                    throw new CannotEncodeByte(
+                        $"Bad length. Length was {bitArray.Length}, requred {BitsInByte}");
                 }
 
                 bitArray.CopyTo(buffer, 0);
@@ -215,11 +216,11 @@ namespace TOKS_lab1.backend
             var listedPackage = packet.ToList();
             if (listedPackage.First() != StartStopByte)
             {
-                throw new Exception("Cannot find start byte");
+                throw new CannotFindStartSymbolException();
             }
             if (listedPackage.Last() != StartStopByte)
             {
-                throw new Exception("Cannot find stop byte");
+                throw new CannotFindStopSymbolException();
             }
 
             listedPackage.RemoveAt(listedPackage.Count - 1);

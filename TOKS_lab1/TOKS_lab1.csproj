@@ -48,6 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="backend\exceptions\CannotEncodeByte.cs" />
+    <Compile Include="backend\exceptions\CannotFindStartSymbolException.cs" />
+    <Compile Include="backend\exceptions\CannotFindStopSymbolException.cs" />
+    <Compile Include="backend\exceptions\ManualException.cs" />
     <Compile Include="backend\InternalLogger.cs" />
     <Compile Include="backend\SerialPortCommunicator.cs" />
     <Compile Include="Enums\EBaudrate.cs" />
