@@ -87,7 +87,7 @@ namespace TOKS_lab1.backend
             {
                 _receivedBuffer = "";
             }
-            InternalLogger.Log.Debug($"Reseiving: \"{data}\"");
+            InternalLogger.Log.Debug($"Receiving: \"{data}\"");
             return data != null ? Encoding.UTF8.GetString(data.ToArray()) : "";
         }
 
@@ -163,7 +163,7 @@ namespace TOKS_lab1.backend
                     //simple byte was found
                     res.Add(byteBuff[0]);                    
                 }
-                res.Clear();
+                buffer.Clear();
             }
 
             return res;
