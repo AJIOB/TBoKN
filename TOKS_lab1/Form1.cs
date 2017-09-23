@@ -83,7 +83,10 @@ namespace TOKS_lab1
         {
             try
             {
-                _serialPortCommunicator.Send(inputTextBox.Text);
+                if (inputTextBox.Text != "")
+                {
+                    _serialPortCommunicator.Send(inputTextBox.Text);
+                }
                 inputTextBox.Text = "";
             }
             catch

@@ -16,6 +16,7 @@ namespace TOKS_lab1.backend
         private const byte StartStopByte = 0x7E;
         private const byte StartStopReplaceTo = 0x7D;
         private const bool EqualStartStopByteWhenReplacing = false;
+        private string _receivedBuffer = "";
 
         public byte MyId { get; set; } = 0;
         public byte PartnerId { get; set; } = 0;
@@ -30,6 +31,7 @@ namespace TOKS_lab1.backend
         /// <param name="s">Sending info</param>
         public void Send(string s)
         {
+            InternalLogger.Log.Debug($"Sending string: \"{s}\"");
             _serialPort.Write(Encoding.ASCII.GetString(GeneratePacket(Encoding.UTF8.GetBytes(s).ToArray()).ToArray()));
         }
 
@@ -69,7 +71,23 @@ namespace TOKS_lab1.backend
         /// <returns>Existing string</returns>
         public string ReadExisting()
         {
-            var data = ParsePacket(Encoding.ASCII.GetBytes(_serialPort.ReadExisting()));
+            _receivedBuffer += _serialPort.ReadExisting();
+            IEnumerable<byte> data = null;
+            bool isStopSymbolFind = true;
+            try
+            {
+                data = ParsePacket(Encoding.ASCII.GetBytes(_receivedBuffer));
+            }
+            catch (CannotFindStopSymbolException e)
+            {
+                isStopSymbolFind = false;
+            }
+
+            if (isStopSymbolFind)
+            {
+                _receivedBuffer = "";
+            }
+            InternalLogger.Log.Debug($"Reseiving: \"{data}\"");
             return data != null ? Encoding.UTF8.GetString(data.ToArray()) : "";
         }
 
