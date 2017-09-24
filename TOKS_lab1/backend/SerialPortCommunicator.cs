@@ -98,6 +98,7 @@ namespace TOKS_lab1.backend
             catch (CannotFindStopSymbolException)
             {
                 //All is good
+                return "";
             }
             catch (CannotFindStartSymbolException)
             {
@@ -272,10 +273,6 @@ namespace TOKS_lab1.backend
             {
                 throw new CannotFindStartSymbolException();
             }
-            /*if (listedPackage.Last() != StartStopByte)
-            {
-                throw new CannotFindStopSymbolException();
-            }*/
 
             index += BitsInByte;
             listedPackage.RemoveRange(0, index);

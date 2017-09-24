@@ -3,6 +3,7 @@ using System.IO.Ports;
 using System.Windows.Forms;
 using TOKS_lab1.backend;
 using TOKS_lab1.Enums;
+using TOKS_lab1.backend.exceptions;
 
 namespace TOKS_lab1
 {
@@ -114,7 +115,17 @@ namespace TOKS_lab1
                             {
                                 this.Invoke((MethodInvoker) (delegate()
                                 {
-                                    outputTextBox.AppendText(_serialPortCommunicator.ReadExisting());
+                                    do
+                                    {
+                                        try
+                                        {
+                                            outputTextBox.AppendText(_serialPortCommunicator.ReadExisting());
+                                        }
+                                        catch (CannotFindStartSymbolException)
+                                        {
+                                            break;
+                                        }
+                                    } while (true);
                                 }));
                             }
                             catch (Exception exception)
