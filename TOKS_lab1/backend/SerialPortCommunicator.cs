@@ -248,10 +248,10 @@ namespace TOKS_lab1.backend
         /// <returns>Generated packet</returns>
         private IEnumerable<byte> GeneratePacket(IEnumerable<byte> data)
         {
-            var encodedMeta = BoolsToBytes(Encode(WrapAddressMetadata(data))).ToList();
-            encodedMeta.Insert(0, StartStopByte);
-            encodedMeta.Add(StartStopByte);
-            return encodedMeta;
+            var encodedMeta = Encode(WrapAddressMetadata(data)).ToList();
+            encodedMeta.InsertRange(0, BytesToBools(new []{StartStopByte}));
+            encodedMeta.AddRange(BytesToBools(new []{StartStopByte}));
+            return BoolsToBytes(encodedMeta);
         }
 
         /// <summary>
