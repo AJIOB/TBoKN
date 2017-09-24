@@ -19,7 +19,7 @@ namespace TOKS_lab1.backend
         private const byte BitStaffingAndMask = 0xFE;
         private const byte BitStaffingReplaceSymbol = 0x7F;
         private const byte GetLastBitMask = 0x01;
-        private readonly List<byte> _receivedBuffer = new List<byte>();
+        private readonly List<bool> _receivedBuffer = new List<bool>();
 
         public byte MyId { get; set; } = 0;
         public byte PartnerId { get; set; } = 0;
@@ -85,14 +85,16 @@ namespace TOKS_lab1.backend
                     InternalLogger.Log.Info("End of the stream was read");
                     break;
                 }
-                _receivedBuffer.Add((byte)received);
+                _receivedBuffer.AddRange(BytesToBools(new[] {(byte) received}));
             }
-            
+
             IEnumerable<byte> data = null;
             bool isStopSymbolFind = true;
             try
             {
-                data = ParsePacket(_receivedBuffer);
+                int index;
+                data = ParsePacket(_receivedBuffer, out index);
+                _receivedBuffer.RemoveRange(0, index);
             }
             catch (CannotFindStopSymbolException)
             {
@@ -149,15 +151,18 @@ namespace TOKS_lab1.backend
         /// Decode bit array to byte array with deletinig bit staffing
         /// </summary>
         /// <param name="inputBits">Bits to decode with bit staffing</param>
+        /// <param name="index">Index of first non-used element (number of used bits)</param>
         /// <returns>Decoded input value</returns>
-        private IEnumerable<byte> Decode(IEnumerable<bool> inputBits)
+        private IEnumerable<byte> Decode(IEnumerable<bool> inputBits, out int index)
         {
             var res = new List<byte>();
             var buffer = new List<bool>();
+            index = 0;
 
             foreach (var b in inputBits)
             {
                 buffer.Add(b);
+                index++;
                 if (buffer.Count < BitsInByte)
                 {
                     continue;
@@ -179,6 +184,11 @@ namespace TOKS_lab1.backend
                         //Escape was found. Need one more bit to decode
                         continue;
                     }
+                    if (byteBuff[0] == StartStopByte)
+                    {
+                        //stop symbol was found
+                        return res;
+                    }
 
                     //simple byte was found
                     res.Add(byteBuff[0]);
@@ -186,7 +196,7 @@ namespace TOKS_lab1.backend
                 buffer.Clear();
             }
 
-            return res;
+            throw new CannotFindStopSymbolException();
         }
 
         /// <summary>
@@ -248,23 +258,37 @@ namespace TOKS_lab1.backend
         /// Parse packet
         /// </summary>
         /// <param name="packet">Packet to parse</param>
+        /// <param name="index">Index of first unused bool element in packet</param>
         /// <returns>Data from packet if packet addressed to me, else return null</returns>
-        private IEnumerable<byte> ParsePacket(IEnumerable<byte> packet)
+        private IEnumerable<byte> ParsePacket(IEnumerable<bool> packet, out int index)
         {
             var listedPackage = packet.ToList();
-            if (listedPackage.First() != StartStopByte)
+            index = 0;
+            bool isStartFound = false;
+            while (listedPackage.Count >= BitsInByte)
+            {
+                if (BoolsToBytes(listedPackage.GetRange(index, BitsInByte)).ToArray()[0] == StartStopByte)
+                {
+                    isStartFound = true;
+                    break;
+                }
+            }
+            if (!isStartFound)
             {
                 throw new CannotFindStartSymbolException();
             }
-            if (listedPackage.Last() != StartStopByte)
+            /*if (listedPackage.Last() != StartStopByte)
             {
                 throw new CannotFindStopSymbolException();
-            }
+            }*/
 
-            listedPackage.RemoveAt(listedPackage.Count - 1);
-            listedPackage.RemoveAt(0);
+            listedPackage.RemoveRange(0, index);
 
-            return DeleteAddressMetadata(Decode(BytesToBools(listedPackage)));
+            int decodeIndex;
+
+            var res = DeleteAddressMetadata(Decode(listedPackage, out decodeIndex));
+            index += decodeIndex;
+            return res;
         }
 
         /// <summary>
