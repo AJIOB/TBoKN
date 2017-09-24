@@ -89,7 +89,6 @@ namespace TOKS_lab1.backend
             }
 
             IEnumerable<byte> data = null;
-            bool isStopSymbolFind = true;
             try
             {
                 int index;
@@ -98,17 +97,12 @@ namespace TOKS_lab1.backend
             }
             catch (CannotFindStopSymbolException)
             {
-                isStopSymbolFind = false;
+                //All is good
             }
             catch (CannotFindStartSymbolException)
             {
                 _receivedBuffer.Clear();
                 throw;
-            }
-
-            if (isStopSymbolFind)
-            {
-                _receivedBuffer.Clear();
             }
             return data != null ? Encoding.UTF8.GetString(data.ToArray()) : "";
         }
@@ -272,6 +266,7 @@ namespace TOKS_lab1.backend
                     isStartFound = true;
                     break;
                 }
+                index++;
             }
             if (!isStartFound)
             {
@@ -282,6 +277,7 @@ namespace TOKS_lab1.backend
                 throw new CannotFindStopSymbolException();
             }*/
 
+            index += BitsInByte;
             listedPackage.RemoveRange(0, index);
 
             int decodeIndex;
