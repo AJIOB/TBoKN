@@ -124,60 +124,39 @@ namespace TOKS_lab1.backend
 
                 if (!isFindByteToStuffing) continue;
 
-                i += BitsInByte;
-                res.Insert(i - 1, true);
+                //Skipping staffed 8 bits
+                i += BitsInByte - 1;
+                res.Insert(i, true);
             }
 
             return res;
         }
 
         /// <summary>
-        /// Decode bit array to byte array with deletinig bit staffing
+        /// Decode bit array by deletinig bit staffing
         /// </summary>
         /// <param name="inputBits">Bits to decode with bit staffing</param>
         /// <param name="index">Index of first non-used element (number of used bits)</param>
         /// <returns>Decoded input value</returns>
-        private IEnumerable<byte> Decode(IEnumerable<bool> inputBits, out int index)
+        private IEnumerable<bool> Decode(IEnumerable<bool> inputBits, out int index)
         {
-            var res = new List<byte>();
-            var buffer = new List<bool>();
-            index = 0;
+            var res = inputBits.ToList();
 
-            foreach (var b in inputBits)
+            for (index = 0; index < (res.Count - BitsInByte); ++index)
             {
-                buffer.Add(b);
-                index++;
-                if (buffer.Count < BitsInByte)
-                {
-                    continue;
-                }
+                var b = BoolsToBytes(res.GetRange(index, BitsInByte)).First();
 
-                var bitArray = new BitArray(buffer.ToArray());
-
-                if (bitArray.Length != BitsInByte)
+                if (b == StartStopByte)
                 {
-                    //Escape decoding
-                    res.Add((byte) ((BitStaffingReplaceSymbol & BitStaffingAndMask) | (b ? 0x1 : 0x0)));
+                    index += BitsInByte;
+                    return res;
                 }
-                else
+                if (b == BitStaffingReplaceSymbol)
                 {
-                    var byteBuff = new byte[1];
-                    bitArray.CopyTo(byteBuff, 0);
-                    if (byteBuff[0] == BitStaffingReplaceSymbol)
-                    {
-                        //Escape was found. Need one more bit to decode
-                        continue;
-                    }
-                    if (byteBuff[0] == StartStopByte)
-                    {
-                        //stop symbol was found
-                        return res;
-                    }
-
-                    //simple byte was found
-                    res.Add(byteBuff[0]);
+                    //Skipping staffed 8 bits (will be 7 after deleting bit)
+                    index += BitsInByte - 2;
+                    res.RemoveAt(index + 1);
                 }
-                buffer.Clear();
             }
 
             throw new CannotFindStopSymbolException();
@@ -268,7 +247,7 @@ namespace TOKS_lab1.backend
 
             int decodeIndex;
 
-            var res = DeleteAddressMetadata(Decode(listedPackage, out decodeIndex));
+            var res = DeleteAddressMetadata(BoolsToBytes(Decode(listedPackage, out decodeIndex)));
             index += decodeIndex;
             return res;
         }
