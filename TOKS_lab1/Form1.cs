@@ -115,17 +115,19 @@ namespace TOKS_lab1
                             {
                                 this.Invoke((MethodInvoker) (delegate()
                                 {
+                                    string s;
                                     do
                                     {
                                         try
                                         {
-                                            outputTextBox.AppendText(_serialPortCommunicator.ReadExisting());
+                                            s = _serialPortCommunicator.ReadExisting();
+                                            outputTextBox.AppendText(s);
                                         }
                                         catch (CannotFindStartSymbolException)
                                         {
                                             break;
                                         }
-                                    } while (true);
+                                    } while (s != "");
                                 }));
                             }
                             catch (Exception exception)
