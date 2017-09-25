@@ -17,7 +17,8 @@ namespace TOKS_lab1.backend
 
         private const byte BitStaffingCheckMask = 0x7E;
         private const byte BitStaffingAndMask = 0xFE;
-        private const byte BitStaffingReplaceSymbol = 0x7F;
+        // not 0x7F, because start parsing (receiving) data from low-order bit
+        private const byte BitStaffingReplaceSymbol = 0xFE;
         private const byte GetLastBitMask = 0x01;
         private readonly List<bool> _receivedBuffer = new List<bool>();
 
@@ -148,7 +149,8 @@ namespace TOKS_lab1.backend
 
                 if (b == StartStopByte)
                 {
-                    res.RemoveRange(index, BitsInByte);
+                    //removing all to the end from stop symbol
+                    res.RemoveRange(index, res.Count - index);
                     index += BitsInByte;
                     return res;
                 }
