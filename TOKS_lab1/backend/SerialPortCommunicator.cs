@@ -117,7 +117,7 @@ namespace TOKS_lab1.backend
         {
             var res = BytesToBools(inputBytes).ToList();
 
-            for (var i = 0; i < (res.Count - BitsInByte); ++i)
+            for (var i = 0; i < (res.Count - BitsInByte + 1); ++i)
             {
                 var b = BoolsToBytes(res.GetRange(i, BitsInByte)).First();
                 var isFindByteToStuffing = (((b & BitStaffingAndMask) ^ BitStaffingCheckMask) == 0);
@@ -142,12 +142,13 @@ namespace TOKS_lab1.backend
         {
             var res = inputBits.ToList();
 
-            for (index = 0; index < (res.Count - BitsInByte); ++index)
+            for (index = 0; index < (res.Count - BitsInByte + 1); ++index)
             {
                 var b = BoolsToBytes(res.GetRange(index, BitsInByte)).First();
 
                 if (b == StartStopByte)
                 {
+                    res.RemoveRange(index, BitsInByte);
                     index += BitsInByte;
                     return res;
                 }
@@ -228,7 +229,7 @@ namespace TOKS_lab1.backend
             var listedPackage = packet.ToList();
             index = 0;
             bool isStartFound = false;
-            while (listedPackage.Count >= BitsInByte)
+            while (index < (listedPackage.Count - BitsInByte + 1))
             {
                 if (BoolsToBytes(listedPackage.GetRange(index, BitsInByte)).ToArray()[0] == StartStopByte)
                 {
