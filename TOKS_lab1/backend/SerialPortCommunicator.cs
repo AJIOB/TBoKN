@@ -115,28 +115,17 @@ namespace TOKS_lab1.backend
         /// <returns>Converted input value</returns>
         private IEnumerable<bool> Encode(IEnumerable<byte> inputBytes)
         {
-            var res = new List<bool>();
-            var buffer = new bool[BitsInByte];
+            var res = BytesToBools(inputBytes).ToList();
 
-            foreach (var b in inputBytes)
+            for (var i = 0; i < (res.Count - BitsInByte); ++i)
             {
+                var b = BoolsToBytes(res.GetRange(i, BitsInByte)).First();
                 var isFindByteToStuffing = (((b & BitStaffingAndMask) ^ BitStaffingCheckMask) == 0);
-                var bitArray = (isFindByteToStuffing
-                    ? new BitArray(new[] {BitStaffingReplaceSymbol})
-                    : new BitArray(new[] {b}));
 
-                if (bitArray.Length != BitsInByte)
-                {
-                    throw new CannotEncodeByte(
-                        $"Bad length. Length was {bitArray.Length}, requred {BitsInByte}");
-                }
+                if (!isFindByteToStuffing) continue;
 
-                bitArray.CopyTo(buffer, 0);
-                res.AddRange(buffer);
-                if (isFindByteToStuffing)
-                {
-                    res.Add((b & GetLastBitMask) == 1);
-                }
+                i += BitsInByte;
+                res.Insert(i - 1, true);
             }
 
             return res;
@@ -244,8 +233,8 @@ namespace TOKS_lab1.backend
         private IEnumerable<byte> GeneratePacket(IEnumerable<byte> data)
         {
             var encodedMeta = Encode(WrapAddressMetadata(data)).ToList();
-            encodedMeta.InsertRange(0, BytesToBools(new []{StartStopByte}));
-            encodedMeta.AddRange(BytesToBools(new []{StartStopByte}));
+            encodedMeta.InsertRange(0, BytesToBools(new[] {StartStopByte}));
+            encodedMeta.AddRange(BytesToBools(new[] {StartStopByte}));
             return BoolsToBytes(encodedMeta);
         }
 
