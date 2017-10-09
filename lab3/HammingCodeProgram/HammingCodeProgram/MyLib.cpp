@@ -46,7 +46,24 @@ std::string BitsToBytes(std::deque<bool> bits)
 {
 	std::string result;
 
-	//TODO
+	std::bitset<bitsInByte> bitset;
+	int bitPos = 0;
+	for (auto b : bits)
+	{
+		bitset[bitPos] = b;
+		bitPos++;
+		if (bitPos >= bitsInByte)
+		{
+			result.push_back(static_cast<const char>(bitset.to_ulong()));
+			bitPos = 0;
+			bitset.reset();
+		}
+	}
+
+	if (bitPos > 0)
+	{
+		result.push_back(static_cast<const char>(bitset.to_ulong()));
+	}
 
 	return result;
 }
