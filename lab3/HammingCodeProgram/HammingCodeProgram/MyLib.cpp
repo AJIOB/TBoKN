@@ -20,7 +20,7 @@ std::deque<bool> EncodeMessage(std::string message)
 	//for main indexing from 1
 	result.push_front(false);
 
-	//inserting control 
+	//inserting control bits
 	for (auto i = 0; i < numOfControlBits; ++i)
 	{
 		//1 << i == pow(2, i)
@@ -40,8 +40,24 @@ std::deque<bool> EncodeMessage(std::string message)
 
 std::string DecodeMessage(std::deque<bool> message, int& numOfFoundErrors, int& posOfError)
 {
-	//TODO
-	return std::string();
+	//for main indexing from 1
+	message.push_front(false);
+
+	if (!FindAndRemoveErrorsIfCan(message, numOfFoundErrors, posOfError))
+	{
+		return "";
+	}
+
+	//removing control bits
+	for (auto i = numOfControlBits - 1; i >= 0; --i)
+	{
+		//1 << i == pow(2, i)
+		message.erase(message.begin() + (1 << i));
+	}
+
+	//removing indexing from 1
+	message.pop_front();
+	return BitsToBytes(message);
 }
 
 std::deque<bool> MakeErrors(std::deque<bool> bits, int& lastPosOfMadeError)
