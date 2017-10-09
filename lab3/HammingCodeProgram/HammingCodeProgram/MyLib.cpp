@@ -60,6 +60,32 @@ std::deque<bool> MakeErrors(std::deque<bool> bits, int& lastPosOfMadeError)
 	return bits;
 }
 
+bool FindAndRemoveErrorsIfCan(std::deque<bool>& message, int& numOfFoundErrors, int& posOfError)
+{
+	int errorPos = 0;
+	for (auto i = 0; i < numOfControlBits; ++i)
+	{
+		if (CalculateControlBit(message, i))
+		{
+			//1 << i == pow(2, i)
+			errorPos += (1 << i);
+		}
+	}
+
+	numOfFoundErrors = (errorPos) ? 1 : 0;
+	posOfError = errorPos - 1;
+
+	if (static_cast<unsigned>(posOfError) >= message.size())
+	{
+		numOfFoundErrors = 2;
+		return false;
+	}
+
+	message[posOfError] = !message[posOfError];
+
+	return true;
+}
+
 std::deque<bool> BytesToBits(std::string bytes)
 {
 	std::deque<bool> result;
