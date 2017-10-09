@@ -27,7 +27,11 @@ std::deque<bool> EncodeMessage(std::string message)
 		result.insert(result.begin() + (1 << i), false);
 	}
 
-	//TODO
+	for (auto i = 0; i < numOfControlBits; ++i)
+	{
+		//1 << i == pow(2, i)
+		result[1 << i] = CalculateControlBit(result, i);
+	}
 
 	//removing indexing from 1
 	result.pop_front();
@@ -118,7 +122,7 @@ bool CalculateControlBit(const std::deque<bool>& bits, const int calculatingLeve
 		//if i need to calculate
 		if (i & delta)
 		{
-			res ^= bits[i];
+			res ^= static_cast<bool>(bits[i]);
 		}
 	}
 
