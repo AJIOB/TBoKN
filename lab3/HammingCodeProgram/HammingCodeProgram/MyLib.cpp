@@ -76,6 +76,11 @@ std::string BitsToBytes(std::deque<bool> bits)
 
 std::ostream& ShowDequeBools(std::ostream& os, const std::deque<bool>& bits)
 {
-	//TODO
+	for (auto bit : bits)
+	{
+		os << bit;
+	}
+
+	os << std::endl;
 	return os;
 }
