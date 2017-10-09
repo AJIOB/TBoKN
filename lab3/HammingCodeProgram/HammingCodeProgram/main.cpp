@@ -1,12 +1,10 @@
 #include <exception>
 #include <iostream>
 
+#include "MyLib.h"
+
 int main(int argc, char* argv[])
 {
-	const int messageLengthInBytes = 2;
-	const int bitsInByte = 8;
-	const int numOfControlBits = 5;
-
 	int errorCode = 0;
 
 	try
@@ -19,10 +17,6 @@ int main(int argc, char* argv[])
 		}
 
 		std::string inputMessage(argv[1]);
-		if (inputMessage.length() != messageLengthInBytes)
-		{
-			throw std::exception("First argument must contains 2 symbols only");
-		}
 
 		//TODO: write code
 
