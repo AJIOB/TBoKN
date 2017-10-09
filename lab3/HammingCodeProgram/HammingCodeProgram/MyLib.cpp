@@ -97,7 +97,7 @@ bool FindAndRemoveErrorsIfCan(std::deque<bool>& message, int& numOfFoundErrors, 
 		return false;
 	}
 
-	message[posOfError] = !message[posOfError];
+	message[errorPos] = !message[errorPos];
 
 	return true;
 }
