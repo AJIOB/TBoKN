@@ -32,8 +32,8 @@ std::string DecodeMessage(std::deque<bool> message, int& numOfFoundErrors, int& 
 std::deque<bool> MakeErrors(std::deque<bool> bits, int& lastPosOfMadeError)
 {
 	// configuring random generator
-	const unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-	std::default_random_engine generator(seed);
+	const auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::default_random_engine generator(static_cast<unsigned int> (seed));
 	const std::uniform_int_distribution<int> distribution(0, bits.size() - 1);
 
 	for (auto i = 0U; i < maxErrors; ++i)
