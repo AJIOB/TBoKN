@@ -4,7 +4,7 @@
 std::deque<bool> EncodeMessage(std::string message);
 std::string DecodeMessage(std::deque<bool> message, int& numOfFoundErrors, int& posOfError);
 
-std::deque<bool> MakeErrors(std::deque<bool> bits, int& posOfMadeError);
+std::deque<bool> MakeErrors(std::deque<bool> bits, int& lastPosOfMadeError);
 
 std::deque<bool> BytesToBits(std::string bytes);
 std::string BitsToBytes(std::deque<bool> bits);

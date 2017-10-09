@@ -28,15 +28,14 @@ int main(int argc, char* argv[])
 
 		std::cout << "Message with error:" << std::endl;
 		const auto withErrors = MakeErrors(encoded, errorOriginalPos);
-		ShowDequeBools(std::cout, encoded);
+		ShowDequeBools(std::cout, withErrors);
 
 		std::cout << "Error original position " << errorOriginalPos << std::endl;
 
 		int errorsFound = 0;
 		int errorPos = 0;
-		std::cout << "Decoded message:" << std::endl;
 		const auto newMessage = DecodeMessage(withErrors, errorsFound, errorPos);
-		ShowDequeBools(std::cout, encoded);
+		std::cout << "Decoded message: " << newMessage << std::endl;
 
 		std::cout << "Found " << errorsFound << " errors on position " << errorPos << std::endl;
 

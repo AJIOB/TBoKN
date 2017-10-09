@@ -1,4 +1,6 @@
 #include <bitset>
+#include <random>
+#include <chrono>
 
 #include "MyLib.h"
 
@@ -27,10 +29,20 @@ std::string DecodeMessage(std::deque<bool> message, int& numOfFoundErrors, int& 
 	return std::string();
 }
 
-std::deque<bool> MakeErrors(std::deque<bool> bits, int& posOfMadeError)
+std::deque<bool> MakeErrors(std::deque<bool> bits, int& lastPosOfMadeError)
 {
-	//TODO
-	return std::deque<bool>();
+	// configuring random generator
+	const unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::default_random_engine generator(seed);
+	const std::uniform_int_distribution<int> distribution(0, bits.size() - 1);
+
+	for (auto i = 0U; i < maxErrors; ++i)
+	{
+		lastPosOfMadeError = distribution(generator);
+		bits[lastPosOfMadeError] = !bits[lastPosOfMadeError];
+	}
+
+	return bits;
 }
 
 std::deque<bool> BytesToBits(std::string bytes)
