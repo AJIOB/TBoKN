@@ -17,9 +17,20 @@ std::deque<bool> EncodeMessage(std::string message)
 	}
 
 	std::deque<bool> result = BytesToBits(message);
+	//for main indexing from 1
+	result.push_front(false);
+
+	//inserting control 
+	for (auto i = 0; i < numOfControlBits; ++i)
+	{
+		//1 << i == pow(2, i)
+		result.insert(result.begin() + (1 << i), false);
+	}
 
 	//TODO
 
+	//removing indexing from 1
+	result.pop_front();
 	return result;
 }
 
@@ -95,4 +106,21 @@ std::ostream& ShowDequeBools(std::ostream& os, const std::deque<bool>& bits)
 
 	os << std::endl;
 	return os;
+}
+
+bool CalculateControlBit(const std::deque<bool>& bits, const int calculatingLevel)
+{
+	auto res = false;
+	const auto delta = 1 << calculatingLevel;
+
+	for (auto i = 0U; i < bits.size(); ++i)
+	{
+		//if i need to calculate
+		if (i & delta)
+		{
+			res ^= bits[i];
+		}
+	}
+
+	return res;
 }
