@@ -5,7 +5,7 @@
 const int messageLengthInBytes = 2;
 const int bitsInByte = 8;
 const int numOfControlBits = 5;
-
+const int maxErrors = 1;
 
 std::deque<bool> EncodeMessage(std::string message)
 {
@@ -21,10 +21,16 @@ std::deque<bool> EncodeMessage(std::string message)
 	return result;
 }
 
-std::string DecodeMessage(std::deque<bool> message, int& numOfFoundErrors)
+std::string DecodeMessage(std::deque<bool> message, int& numOfFoundErrors, int& posOfError)
 {
 	//TODO
 	return std::string();
+}
+
+std::deque<bool> MakeErrors(std::deque<bool> bits, int& posOfMadeError)
+{
+	//TODO
+	return std::deque<bool>();
 }
 
 std::deque<bool> BytesToBits(std::string bytes)
@@ -66,4 +72,10 @@ std::string BitsToBytes(std::deque<bool> bits)
 	}
 
 	return result;
+}
+
+std::ostream& ShowDequeBools(std::ostream& os, const std::deque<bool>& bits)
+{
+	//TODO
+	return os;
 }

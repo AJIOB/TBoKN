@@ -1,5 +1,6 @@
 #include <exception>
 #include <iostream>
+#include <string>
 
 #include "MyLib.h"
 
@@ -16,9 +17,28 @@ int main(int argc, char* argv[])
 			throw std::exception("Need to pass only one argument: message to encode");
 		}
 
-		std::string inputMessage(argv[1]);
+		const std::string inputMessage(argv[1]);
+		std::cout << "Original message: " << inputMessage << std::endl;
 
-		//TODO: write code
+		std::cout << "Encoded message:" << std::endl;
+		const auto encoded = EncodeMessage(inputMessage);
+		ShowDequeBools(std::cout, encoded);
+
+		int errorOriginalPos = 0;
+
+		std::cout << "Message with error:" << std::endl;
+		const auto withErrors = MakeErrors(encoded, errorOriginalPos);
+		ShowDequeBools(std::cout, encoded);
+
+		std::cout << "Error original position " << errorOriginalPos << std::endl;
+
+		int errorsFound = 0;
+		int errorPos = 0;
+		std::cout << "Decoded message:" << std::endl;
+		const auto newMessage = DecodeMessage(withErrors, errorsFound, errorPos);
+		ShowDequeBools(std::cout, encoded);
+
+		std::cout << "Found " << errorsFound << " errors on position " << errorPos << std::endl;
 
 		std::cout << "Application was successfully finished" << std::endl;
 	}
