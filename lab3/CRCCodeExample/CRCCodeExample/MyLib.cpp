@@ -58,6 +58,8 @@ std::string MakeErrors(std::string message, int& lastPosOfMadeError)
 
 bool FindAndRemoveErrorsIfCan(std::string& message)
 {
+	CheckMessage(message, message.size());
+
 	auto messageWorking = message;
 
 	for (auto i = 0U; i < message.size(); ++i)
@@ -83,7 +85,32 @@ bool FindAndRemoveErrorsIfCan(std::string& message)
 
 std::string Divide(std::string dividiend, std::string divisior)
 {
-	return dividiend;
+	CheckMessage(dividiend, dividiend.size());
+	CheckMessage(divisior, divisior.size());
+
+	if (dividiend.size() < divisior.size())
+	{
+		return dividiend;
+	}
+
+	auto dividiendNum = StringToULong(dividiend);
+	auto divisiorNum = StringToULong(divisior);
+
+	//put divisior to left position
+	divisiorNum <<= (dividiend.size() - divisior.size());
+
+	//dividing
+	for (auto i = dividiend.size() - 1; i >= (divisior.size() - 1); --i)
+	{
+		if (dividiendNum & i)
+		{
+			dividiendNum ^= divisiorNum;
+		}
+
+		divisiorNum >>= 1;
+	}
+
+	return ULongToString(dividiendNum, divisior.size() - 1);
 }
 
 void CheckMessageLength(const std::string& message, const int requiredLength)
