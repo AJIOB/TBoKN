@@ -19,3 +19,6 @@ std::string Add(const std::string& a1, const std::string& a2);
 
 bool CharToBool(const char c);
 char BoolToChar(const bool c);
+
+std::string ULongToString(const unsigned long num, const int stringLen);
+unsigned long StringToULong(const std::string& num);

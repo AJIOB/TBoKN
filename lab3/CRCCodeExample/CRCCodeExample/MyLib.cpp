@@ -128,3 +128,25 @@ char BoolToChar(const bool c)
 {
 	return (c ? one : zero);
 }
+
+std::string ULongToString(const unsigned long num, const int stringLen)
+{
+	std::string res;
+	for (int i = 0; i < stringLen; ++i)
+	{
+		res.push_back(BoolToChar(num & (1 << i)));
+	}
+	return res;
+}
+
+unsigned long StringToULong(const std::string& num)
+{
+	unsigned long res = 0;
+	for (int i = num.size() - 1; i >= 0; --i)
+	{
+		res <<= 1;
+		res |= static_cast<unsigned long>(CharToBool(num[i]));
+	}
+
+	return res;
+}
