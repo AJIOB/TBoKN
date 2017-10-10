@@ -182,7 +182,7 @@ char BoolToChar(const bool c)
 std::string ULongToString(const unsigned long num, const int stringLen)
 {
 	std::string res;
-	for (int i = 0; i < stringLen; ++i)
+	for (int i = stringLen - 1; i >= 0; --i)
 	{
 		res.push_back(BoolToChar(num & (1 << i)));
 	}
@@ -192,7 +192,7 @@ std::string ULongToString(const unsigned long num, const int stringLen)
 unsigned long StringToULong(const std::string& num)
 {
 	unsigned long res = 0;
-	for (int i = num.size() - 1; i >= 0; --i)
+	for (auto i = 0U; i < num.size(); ++i)
 	{
 		res <<= 1;
 		res |= static_cast<unsigned long>(CharToBool(num[i]));
