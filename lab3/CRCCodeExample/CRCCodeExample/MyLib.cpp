@@ -7,13 +7,27 @@
 
 const int messageLengthInBits = 4;
 const int numOfControlBits = 3;
-const std::bitset<messageLengthInBits> controlPolinom("1011");
+const int polinomLength = 4;
+const std::string controlPolinom("1011");
 const int maxErrors = 1;
 const char zero = '0';
 const char one = '1';
 
 std::string EncodeMessage(std::string message)
 {
+	CheckMessage(message, messageLengthInBits);
+
+	auto messageToDivide = message;
+
+	//G(x) * x^3
+	for (int i = 0; i < numOfControlBits; ++i)
+	{
+		messageToDivide.push_back(zero);
+	}
+
+	//G(x) * x^3 + R(x)
+	message += Divide(messageToDivide, controlPolinom);
+
 	return message;
 }
 
