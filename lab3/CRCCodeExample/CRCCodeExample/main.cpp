@@ -20,24 +20,24 @@ int main(int argc, char* argv[])
 		const std::string inputMessage(argv[1]);
 		std::cout << "Original message: " << inputMessage << std::endl;
 
-		std::cout << "Encoded message:" << std::endl;
 		const auto encoded = EncodeMessage(inputMessage);
-		ShowDequeBools(std::cout, encoded);
+		std::cout << "Encoded message: " << std::endl << encoded << std::endl;
 
 		int errorOriginalPos = 0;
 
-		std::cout << "Message with error:" << std::endl;
-		const auto withErrors = MakeErrors(encoded, errorOriginalPos);
-		ShowDequeBools(std::cout, withErrors);
-
+		auto withErrors = MakeErrors(encoded, errorOriginalPos);
+		std::cout << "Message with error:" << std::endl << withErrors << std::endl;
 		std::cout << "Error original position " << errorOriginalPos << std::endl;
 
-		int errorsFound = 0;
-		int errorPos = 0;
-		const auto newMessage = DecodeMessage(withErrors, errorsFound, errorPos);
-		std::cout << "Decoded message: " << newMessage << std::endl;
+		const auto isCanFixErrors = FindAndRemoveErrorsIfCan(withErrors);
+		std::cout << "We can" << (isCanFixErrors ? "" : "not") << " fix errors" << std::endl;
+		if (isCanFixErrors)
+		{
+			std::cout << "Message without error:" << std::endl << withErrors << std::endl;
+		}
 
-		std::cout << "Found " << errorsFound << " errors on position " << errorPos << std::endl;
+		const auto newMessage = DecodeMessage(withErrors);
+		std::cout << "Decoded message: " << newMessage << std::endl;
 
 		std::cout << "Application was successfully finished" << std::endl;
 	}
