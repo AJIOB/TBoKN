@@ -33,7 +33,8 @@ std::string EncodeMessage(std::string message)
 
 std::string DecodeMessage(std::string message)
 {
-	return message;
+	CheckMessage(message, messageLengthInBits + numOfControlBits);
+	return message.substr(0, messageLengthInBits);
 }
 
 std::string MakeErrors(std::string message, int& lastPosOfMadeError)
