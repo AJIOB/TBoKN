@@ -93,25 +93,28 @@ int CalculateOnes(const std::string& message)
 
 void LeftShift(std::string& message)
 {
-	//TODO
+	auto num = StringToULong(message);
+	num <<= 1;
+	num |= ((num >> message.size()) & 1);
+
+	message = ULongToString(num, message.size());
 }
 
 void RightShift(std::string& message)
 {
-	//TODO
+	auto num = StringToULong(message);
+	num |= ((num & 1) << message.size());
+	num >>= 1;
+
+	message = ULongToString(num, message.size());
 }
 
 std::string Add(const std::string& a1, const std::string& a2)
 {
-	//TODO
-	std::string res(std::max(a1, a2), zero);
+	const auto a1ul = StringToULong(a1);
+	const auto a2ul = StringToULong(a2);
 
-	for (auto i = res.size() - 1; i >= 0; --i)
-	{
-		
-	}
-
-	return a1;
+	return ULongToString(a1ul ^ a2ul, std::max(a1.size(), a2.size()));
 }
 
 bool CharToBool(const char c)
