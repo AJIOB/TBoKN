@@ -11,3 +11,4 @@ bool FindAndRemoveErrorsIfCan(std::string& message);
 std::string Divide(std::string dividiend, std::string divisior);
 
 void CheckMessageLength(const std::string& message, const int requiredLength);
+void CheckMessage(const std::string& message, const int requiredLength);
