@@ -58,7 +58,27 @@ std::string MakeErrors(std::string message, int& lastPosOfMadeError)
 
 bool FindAndRemoveErrorsIfCan(std::string& message)
 {
-	return true;
+	auto messageWorking = message;
+
+	for (auto i = 0U; i < message.size(); ++i)
+	{
+		const auto divisionRes = Divide(messageWorking, controlPolinom);
+		if (CalculateOnes(divisionRes) <= maxFixingErrors)
+		{
+			messageWorking = Add(divisionRes, messageWorking);
+			for (auto j = 0U; j < i; ++j)
+			{
+				RightShift(messageWorking);
+			}
+
+			message = messageWorking;
+			return true;
+		}
+
+		LeftShift(messageWorking);
+	}
+
+	return false;
 }
 
 std::string Divide(std::string dividiend, std::string divisior)
