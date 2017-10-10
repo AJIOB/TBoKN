@@ -10,6 +10,7 @@ const int numOfControlBits = 3;
 const int polinomLength = 4;
 const std::string controlPolinom("1011");
 const int maxErrors = 1;
+const int maxFixingErrors = 1;
 const char zero = '0';
 const char one = '1';
 
@@ -49,7 +50,7 @@ std::string MakeErrors(std::string message, int& lastPosOfMadeError)
 	for (auto i = 0U; i < maxErrors; ++i)
 	{
 		lastPosOfMadeError = distribution(generator);
-		message[lastPosOfMadeError] = (message[lastPosOfMadeError] == one ? zero : one);
+		message[lastPosOfMadeError] = BoolToChar(!CharToBool(message[lastPosOfMadeError]));
 	}
 
 	return message;
@@ -88,4 +89,42 @@ void CheckMessage(const std::string& message, const int requiredLength)
 int CalculateOnes(const std::string& message)
 {
 	return std::count(message.begin(), message.end(), one);
+}
+
+void LeftShift(std::string& message)
+{
+	//TODO
+}
+
+void RightShift(std::string& message)
+{
+	//TODO
+}
+
+std::string Add(const std::string& a1, const std::string& a2)
+{
+	//TODO
+	std::string res(std::max(a1, a2), zero);
+
+	for (auto i = res.size() - 1; i >= 0; --i)
+	{
+		
+	}
+
+	return a1;
+}
+
+bool CharToBool(const char c)
+{
+	if (c != one && c != zero)
+	{
+		throw std::exception("Bad input for CharToBool function");
+	}
+
+	return (c == one);
+}
+
+char BoolToChar(const bool c)
+{
+	return (c ? one : zero);
 }

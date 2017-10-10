@@ -13,3 +13,9 @@ std::string Divide(std::string dividiend, std::string divisior);
 void CheckMessageLength(const std::string& message, const int requiredLength);
 void CheckMessage(const std::string& message, const int requiredLength);
 int CalculateOnes(const std::string& message);
+void LeftShift(std::string& message);
+void RightShift(std::string& message);
+std::string Add(const std::string& a1, const std::string& a2);
+
+bool CharToBool(const char c);
+char BoolToChar(const bool c);
