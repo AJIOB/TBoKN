@@ -84,3 +84,8 @@ void CheckMessage(const std::string& message, const int requiredLength)
 		throw std::exception("Bad message containing");
 	}
 }
+
+int CalculateOnes(const std::string& message)
+{
+	return std::count(message.begin(), message.end(), one);
+}
