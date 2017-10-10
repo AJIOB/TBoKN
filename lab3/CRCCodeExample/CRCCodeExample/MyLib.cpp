@@ -102,7 +102,7 @@ std::string Divide(std::string dividiend, std::string divisior)
 	//dividing
 	for (auto i = dividiend.size() - 1; i >= (divisior.size() - 1); --i)
 	{
-		if (dividiendNum & i)
+		if (dividiendNum & (1 << i))
 		{
 			dividiendNum ^= divisiorNum;
 		}
