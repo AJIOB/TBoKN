@@ -4,8 +4,34 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:lab4"
+        xmlns:enums="clr-namespace:lab4.Enums"
+        xmlns:enumUtils="clr-namespace:lab4.Enums.Utilities"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:sysPorts="clr-namespace:System.IO.Ports;assembly=System"
         mc:Ignorable="d"
         Title="TBoKN lab4. Made by AJIOB" Height="300" Width="525">
+    <Window.Resources>
+        <!--Baudrate-->
+        <ObjectDataProvider ObjectType="enumUtils:EnumViewUtility" MethodName="GetValuesAndDescriptions" x:Key="Baudrate">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="enums:EBaudrate"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <!--Data bits-->
+        <ObjectDataProvider ObjectType="enumUtils:EnumViewUtility" MethodName="GetValuesAndDescriptions" x:Key="DataBits">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="enums:EDataBits" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <!--Parity-->
+        <ObjectDataProvider ObjectType="enumUtils:EnumViewUtility" MethodName="GetValuesAndDescriptionsToString" x:Key="Parity">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="sysPorts:Parity" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <!--Stop bits-->
+        <ObjectDataProvider ObjectType="enumUtils:EnumViewUtility" MethodName="GetValuesAndDescriptionsStopBits" x:Key="StopBits"/>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -86,11 +112,28 @@
             <Button Grid.Row="6" Grid.ColumnSpan="2" Margin="5" Click="StartStopButtonPressed" />
 
             <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" Name="CurrentPortComboBox" />
-            <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" Name="BaudrateComboBox" />
-            <ComboBox Grid.Row="2" Grid.Column="1" Margin="5" Name="DataBitsComboBox" />
-            <ComboBox Grid.Row="3" Grid.Column="1" Margin="5" Name="StopBitsComboBox" />
-            <ComboBox Grid.Row="4" Grid.Column="1" Margin="5" Name="ParityComboBox" />
-            <ComboBox Grid.Row="5" Grid.Column="1" Margin="5" Name="FlowControlComboBox" />
+            <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" Name="BaudrateComboBox" 
+                      ItemsSource="{Binding Source={StaticResource Baudrate}}"
+                      DisplayMemberPath="Description"
+                      SelectedValuePath="Value"
+                      SelectedValue="9600"/>
+            <ComboBox Grid.Row="2" Grid.Column="1" Margin="5" Name="DataBitsComboBox" 
+                      ItemsSource="{Binding Source={StaticResource DataBits}}"
+                      DisplayMemberPath="Description"
+                      SelectedValuePath="Value"
+                      SelectedValue="8"/>
+            <ComboBox Grid.Row="3" Grid.Column="1" Margin="5" Name="StopBitsComboBox" 
+                      ItemsSource="{Binding Source={StaticResource StopBits}}"
+                      DisplayMemberPath="Description"
+                      SelectedValuePath="Value"
+                      SelectedValue="1"/>
+            <ComboBox Grid.Row="4" Grid.Column="1" Margin="5" Name="ParityComboBox" 
+                      ItemsSource="{Binding Source={StaticResource Parity}}"
+                      DisplayMemberPath="Description"
+                      SelectedValuePath="Value"
+                      SelectedValue="None"/>
+            <ComboBox Grid.Row="5" Grid.Column="1" Margin="5" Name="FlowControlComboBox" 
+                      SelectedValue="None"/>
         </Grid>
     </Grid>
 </Window>

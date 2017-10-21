@@ -73,6 +73,7 @@
     <Compile Include="backend\SerialPortCommunicator.cs" />
     <Compile Include="Enums\EBaudrate.cs" />
     <Compile Include="Enums\EDataBits.cs" />
+    <Compile Include="Enums\Utilities\EnumViewUtility.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
