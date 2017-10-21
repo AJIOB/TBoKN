@@ -24,6 +24,8 @@ namespace lab4
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string ErrorMessageBoxHeader = @"Oops, we have an error";
+
         private readonly SerialPortCommunicator _serialPortCommunicator = new SerialPortCommunicator();
 
         public MainWindow()
@@ -41,42 +43,49 @@ namespace lab4
             {
                 try
                 {
-                    _serialPortCommunicator.Open((string)CurrentPortComboBox.SelectedItem,
-                        (EBaudrate)BaudrateComboBox.SelectedItem, (Parity)ParityComboBox.SelectedItem,
-                        (EDataBits)DataBitsComboBox.SelectedItem, (StopBits)StopBitsComboBox.SelectedItem,
-                        //TODO
-                        /*delegate
+                    _serialPortCommunicator.Open((string) CurrentPortComboBox.SelectedItem,
+                        (EBaudrate) BaudrateComboBox.SelectedItem, (Parity) ParityComboBox.SelectedItem,
+                        (EDataBits) DataBitsComboBox.SelectedItem, (StopBits) StopBitsComboBox.SelectedItem,
+                        delegate
                         {
                             try
                             {
-                                this.Invoke((MethodInvoker)(delegate ()
+                                string s;
+                                do
                                 {
-                                    string s;
-                                    do
+                                    try
                                     {
-                                        try
-                                        {
-                                            s = _serialPortCommunicator.ReadExisting();
-                                            OutputTextBox.AppendText(s);
-                                        }
-                                        catch (CannotFindStartSymbolException)
-                                        {
-                                            break;
-                                        }
-                                    } while (s != "");
-                                }));
+                                        s = _serialPortCommunicator.ReadExisting();
+                                        OutputTextBox.AppendText(s);
+                                    }
+                                    catch (CannotFindStartSymbolException)
+                                    {
+                                        break;
+                                    }
+                                } while (s != "");
                             }
                             catch (Exception exception)
                             {
+                                InternalLogger.Log.Error("Cannot read data from port:", exception);
                                 ShowErrorBox(exception.Message);
                             }
-                        }*/null);
+                        });
                 }
-                catch
+                catch (Exception exception)
                 {
-                    //ShowErrorBox(@"Cannot open selected port with selected configuration");
+                    InternalLogger.Log.Error("Caanot open port:", exception);
+                    ShowErrorBox(@"Cannot open selected port with selected configuration");
                 }
             }
+        }
+
+        /// <summary>
+        /// Show error box with message
+        /// </summary>
+        /// <param name="errorText">Message to show</param>
+        private static void ShowErrorBox(string errorText)
+        {
+            MessageBox.Show(errorText, ErrorMessageBoxHeader, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }
