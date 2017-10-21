@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using lab4.backend;
 
 namespace lab4
 {
@@ -13,5 +14,14 @@ namespace lab4
     /// </summary>
     public partial class App : Application
     {
+        private void OnAppStarted(object sender, StartupEventArgs e)
+        {
+            InternalLogger.Log.Info("Application was started");
+        }
+
+        private void OnAppClosed(object sender, ExitEventArgs exitEventArgs)
+        {
+            InternalLogger.Log.Info("Application was finished");
+        }
     }
 }

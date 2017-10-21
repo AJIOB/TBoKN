@@ -81,14 +81,14 @@
             <TextBlock Grid.Row="4" Text="Parity:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
             <TextBlock Grid.Row="5" Text="Flow control:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
 
-            <Button Grid.Row="6" Grid.ColumnSpan="2" Margin="5" />
+            <Button Grid.Row="6" Grid.ColumnSpan="2" Margin="5" Click="StartStopButtonPressed" />
 
-            <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" />
-            <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" />
-            <ComboBox Grid.Row="2" Grid.Column="1" Margin="5" />
-            <ComboBox Grid.Row="3" Grid.Column="1" Margin="5" />
-            <ComboBox Grid.Row="4" Grid.Column="1" Margin="5" />
-            <ComboBox Grid.Row="5" Grid.Column="1" Margin="5" />
+            <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" Name="CurrentPortComboBox"/>
+            <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" Name="BaudrateComboBox"/>
+            <ComboBox Grid.Row="2" Grid.Column="1" Margin="5" Name="DataBitsComboBox"/>
+            <ComboBox Grid.Row="3" Grid.Column="1" Margin="5" Name="StopBitsComboBox"/>
+            <ComboBox Grid.Row="4" Grid.Column="1" Margin="5" Name="ParityComboBox"/>
+            <ComboBox Grid.Row="5" Grid.Column="1" Margin="5" Name="FlowControlComboBox"/>
         </Grid>
     </Grid>
 </Window>
