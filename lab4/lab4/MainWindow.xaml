@@ -5,29 +5,32 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:lab4"
         mc:Ignorable="d"
-        Title="TBoKN lab4. Made by AJIOB" Height="350" Width="525">
+        Title="TBoKN lab4. Made by AJIOB" Height="300" Width="525">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Grid >
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="3*"/>
-                <RowDefinition Height="7*"/>
+                <RowDefinition Height="3*" />
+                <RowDefinition Height="7*" />
             </Grid.RowDefinitions>
 
             <Grid>
-                <TextBox Name="inputTextBox" Margin="5" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" AcceptsTab="True" IsUndoEnabled="False"/>
-            
+                <TextBox Name="InputTextBox" Margin="5" HorizontalScrollBarVisibility="Auto"
+                         VerticalScrollBarVisibility="Auto" AcceptsReturn="True" AcceptsTab="True"
+                         IsUndoEnabled="False" />
+
                 <!--Input text watermark-->
-                <TextBlock IsHitTestVisible="False" Text="Input your text here" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,6,0,0" Foreground="DarkGray">
+                <TextBlock IsHitTestVisible="False" Text="Input your text here" VerticalAlignment="Top"
+                           HorizontalAlignment="Left" Margin="8,6,0,0" Foreground="DarkGray">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Text, ElementName=inputTextBox}" Value="">
-                                    <Setter Property="Visibility" Value="Visible"/>
+                                <DataTrigger Binding="{Binding Text, ElementName=InputTextBox}" Value="">
+                                    <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -36,22 +39,56 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <TextBox Name="outputTextBox" Margin="5" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" AcceptsTab="True" IsReadOnly="True"/>
+                <TextBox Name="OutputTextBox" Margin="5" HorizontalScrollBarVisibility="Auto"
+                         VerticalScrollBarVisibility="Auto" AcceptsReturn="True" AcceptsTab="True" IsReadOnly="True" />
 
                 <!--Output text watermark-->
-                <TextBlock IsHitTestVisible="False" Text="Output text will be here" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,6,0,0" Foreground="DarkGray">
+                <TextBlock IsHitTestVisible="False" Text="Output text will be here" VerticalAlignment="Top"
+                           HorizontalAlignment="Left" Margin="8,6,0,0" Foreground="DarkGray">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Text, ElementName=outputTextBox}" Value="">
-                                    <Setter Property="Visibility" Value="Visible"/>
+                                <DataTrigger Binding="{Binding Text, ElementName=OutputTextBox}" Value="">
+                                    <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
             </Grid>
+        </Grid>
+
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="Current port:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
+            <TextBlock Grid.Row="1" Text="Baudrate:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
+            <TextBlock Grid.Row="2" Text="Data bits:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
+            <TextBlock Grid.Row="3" Text="Stop bits:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
+            <TextBlock Grid.Row="4" Text="Parity:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
+            <TextBlock Grid.Row="5" Text="Flow control:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
+
+            <Button Grid.Row="6" Grid.ColumnSpan="2" Margin="5" />
+
+            <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" />
+            <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" />
+            <ComboBox Grid.Row="2" Grid.Column="1" Margin="5" />
+            <ComboBox Grid.Row="3" Grid.Column="1" Margin="5" />
+            <ComboBox Grid.Row="4" Grid.Column="1" Margin="5" />
+            <ComboBox Grid.Row="5" Grid.Column="1" Margin="5" />
         </Grid>
     </Grid>
 </Window>
