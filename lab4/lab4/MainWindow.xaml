@@ -31,6 +31,8 @@
         </ObjectDataProvider>
         <!--Stop bits-->
         <ObjectDataProvider ObjectType="enumUtils:EnumViewUtility" MethodName="GetValuesAndDescriptionsStopBits" x:Key="StopBits"/>
+        <!--Flow control-->
+        <ObjectDataProvider ObjectType="enumUtils:EnumViewUtility" MethodName="GetValuesAndDescriptionsFlowControl" x:Key="FlowControl"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -133,7 +135,10 @@
                       SelectedValuePath="Value"
                       SelectedValue="None"/>
             <ComboBox Grid.Row="5" Grid.Column="1" Margin="5" Name="FlowControlComboBox" 
-                      SelectedValue="None"/>
+                      ItemsSource="{Binding Source={StaticResource FlowControl}}"
+                      DisplayMemberPath="Description"
+                      SelectedValuePath="Value"
+                      SelectedValue="None" IsEnabled="False"/>
         </Grid>
     </Grid>
 </Window>

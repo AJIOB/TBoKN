@@ -52,5 +52,19 @@ namespace lab4.Enums.Utilities
                 };
             return valuesAndDescriptions.ToArray();
         }
+        
+        public static object[] GetValuesAndDescriptionsFlowControl()
+        {
+            var valuesDictionary = new Dictionary<object, string> {
+                {StopBits.None, "None"}
+            };
+            var valuesAndDescriptions = from value in valuesDictionary
+                select new
+                {
+                    Value = value.Key,
+                    Description = value.Value
+                };
+            return valuesAndDescriptions.ToArray();
+        }
     }
 }
