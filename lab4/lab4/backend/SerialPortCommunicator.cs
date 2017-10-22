@@ -10,7 +10,7 @@ using lab4.Enums;
 
 namespace lab4.backend
 {
-    public class SerialPortCommunicator
+    public class SerialPortCommunicator : INotifyPropertyChanged
     {
         private SerialPort _maskedSerialPort;
 

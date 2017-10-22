@@ -25,14 +25,19 @@ namespace lab4
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private const string ErrorMessageBoxHeader = @"Oops, we have an error";
+        private const string StartStringText = "Start";
+        private const string StopStringText = "Stop";
 
         private readonly SerialPortCommunicator _serialPortCommunicator = new SerialPortCommunicator();
 
         public ObservableCollection<string> Ports { get; } = new ObservableCollection<string>();
-        private bool IsPortOpen => _serialPortCommunicator.IsOpen;
+        public bool IsPortOpen => _serialPortCommunicator.IsOpen;
+        public bool IsPortNotOpen => !IsPortOpen;
+
+        public string StartStopButtonText => IsPortOpen ? StopStringText : StartStringText;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -45,6 +50,8 @@ namespace lab4
                 if (args.PropertyName == nameof(SerialPortCommunicator.IsOpen))
                 {
                     OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsPortOpen)));
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsPortNotOpen)));
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(StartStopButtonText)));
                 }
             };
         }
@@ -68,7 +75,7 @@ namespace lab4
                 }
                 catch (Exception exception)
                 {
-                    InternalLogger.Log.Error("Caanot open port:", exception);
+                    InternalLogger.Log.Error("Cannot open port:", exception);
                     ShowErrorBox(@"Cannot open selected port with selected configuration");
                 }
             }
@@ -128,6 +135,31 @@ namespace lab4
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             PropertyChanged?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Call to change property
+        /// </summary>
+        /// <typeparam name="T">Property type</typeparam>
+        /// <param name="value">New property value</param>
+        /// <param name="maskedValue">Field with old property value (masked field)</param>
+        /// <param name="propertyName">Name of property</param>
+        private void ChangeProperty<T>(ref T value, ref T maskedValue, string propertyName)
+        {
+            bool isChanged;
+            if (maskedValue == null)
+            {
+                isChanged = (value != null);
+            }
+            else
+            {
+                isChanged = !maskedValue.Equals(value);
+            }
+            maskedValue = value;
+            if (isChanged)
+            {
+                OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

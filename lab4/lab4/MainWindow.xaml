@@ -111,16 +111,31 @@
             <TextBlock Grid.Row="5" Grid.Column="0" Text="Flow control:" VerticalAlignment="Center" HorizontalAlignment="Right"
                        Margin="5" />
 
-            <Button Grid.Row="6" Grid.ColumnSpan="2" Grid.Column="0" Margin="5" Click="StartStopButtonPressed" />
+            <Button Grid.Row="6" Grid.ColumnSpan="2" Grid.Column="0" Margin="5" Click="StartStopButtonPressed" Name="StartStopButton">
+                <Button.Content>
+                    <Binding Path="StartStopButtonText">
+                        <Binding.RelativeSource>
+                            <RelativeSource Mode="FindAncestor" AncestorType="{x:Type local:MainWindow}"></RelativeSource>
+                        </Binding.RelativeSource>
+                    </Binding>
+                </Button.Content>
+            </Button>
 
             <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" Name="CurrentPortComboBox" DropDownOpened="PortsRefresh" >
                 <ComboBox.ItemsSource>
                     <Binding Path="Ports">
                         <Binding.RelativeSource>
-                            <RelativeSource Mode="FindAncestor" AncestorType="{x:Type local:MainWindow}"></RelativeSource>
+                            <RelativeSource Mode="FindAncestor" AncestorType="{x:Type local:MainWindow}"/>
                         </Binding.RelativeSource>
                     </Binding>
                 </ComboBox.ItemsSource>
+                <ComboBox.IsEnabled>
+                    <Binding Path="IsPortNotOpen">
+                        <Binding.RelativeSource>
+                            <RelativeSource Mode="FindAncestor" AncestorType="{x:Type local:MainWindow}"/>
+                        </Binding.RelativeSource>
+                    </Binding>
+                </ComboBox.IsEnabled>
             </ComboBox>
             <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" Name="BaudrateComboBox" 
                       ItemsSource="{Binding Source={StaticResource Baudrate}}"
