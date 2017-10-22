@@ -52,14 +52,19 @@
                          IsEnabled="{Binding Path=IsPortOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
 
                 <!--Input text watermark-->
-                <TextBlock IsHitTestVisible="False" Text="Input your text here" VerticalAlignment="Top"
+                <TextBlock IsHitTestVisible="False" VerticalAlignment="Top"
                            HorizontalAlignment="Left" Margin="8,6,0,0" Foreground="DarkGray">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Visibility" Value="Collapsed" />
+                            <Setter Property="Text" Value="Input your text here" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Text, ElementName=InputTextBox}" Value="">
                                     <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=IsPortOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" 
+                                             Value="False">
+                                    <Setter Property="Text" Value="First of all, start connection, please" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
