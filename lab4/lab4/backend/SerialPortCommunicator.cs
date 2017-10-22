@@ -25,8 +25,13 @@ namespace lab4.backend
         private const byte EscapeByte = 0x01;
         private const byte JamByteSecondInEscape = 0x00;
         private const byte EscapeByteSecondInEscape = 0x02;
+
+        private const byte JamByteToShow = (byte) 'X';
+
         private const int TimeToWaitNextByteInMs = 100;
-        
+
+        private CommunicatorStates _state = CommunicatorStates.Standart;
+
         private readonly List<byte> _receivedBuffer = new List<byte>();
 
         public delegate void ReceivedEventHandler(object sender, EventArgs e);
@@ -102,10 +107,10 @@ namespace lab4.backend
             var dataToSend = GeneratePacket(Encoding.ASCII.GetBytes(s)).ToArray();
             foreach (var b in dataToSend)
             {
-                SerialPort.Write(new []{b}, 0, 1);
+                SerialPort.Write(new[] {b}, 0, 1);
             }
         }
-        
+
         /// <summary>
         /// Closing current connection
         /// </summary>
@@ -135,16 +140,18 @@ namespace lab4.backend
                 SerialPort.DataReceived +=
                     delegate(object sender, SerialDataReceivedEventArgs args) { receivedEventHandler(sender, args); };
             _receivedBuffer.Clear();
+            SerialPort.ReadTimeout = TimeToWaitNextByteInMs;
         }
 
         /// <summary>
-        /// Read existiong string
+        /// Read existing string
         /// </summary>
         /// <returns>Existing string</returns>
         public string ReadExisting()
         {
+            var parsedList = new List<byte>();
             //Reading data from serial port
-            while (SerialPort.BytesToRead > 0)
+            while (true)
             {
                 var received = SerialPort.ReadByte();
                 if (received < 0)
@@ -152,23 +159,72 @@ namespace lab4.backend
                     InternalLogger.Log.Info("End of the stream was read");
                     break;
                 }
-                _receivedBuffer.Add((byte) received);
+
+                var receivedByte = (byte) received;
+
+                //Receiver state machine
+                switch (_state)
+                {
+                    case CommunicatorStates.EscapeFound:
+                        _state = CommunicatorStates.Standart;
+                        switch (receivedByte)
+                        {
+                            case EscapeByteSecondInEscape:
+                                _receivedBuffer.Add(EscapeByte);
+                                break;
+                            case JamByteSecondInEscape:
+                                _receivedBuffer.Add(JamByte);
+                                break;
+                            default:
+                                _state = CommunicatorStates.JamFound;
+                                break;
+                        }
+                        break;
+                    case CommunicatorStates.Standart:
+                        switch (receivedByte)
+                        {
+                            case EscapeByte:
+                                _state = CommunicatorStates.EscapeFound;
+                                parsedList.AddRange(_receivedBuffer);
+                                _receivedBuffer.Clear();
+                                break;
+                            case JamByte:
+                                _state = CommunicatorStates.JamFound;
+                                break;
+                            default:
+                                parsedList.AddRange(_receivedBuffer);
+                                _receivedBuffer.Clear();
+                                _receivedBuffer.Add(receivedByte);
+                                break;
+                        }
+                        break;
+                    case CommunicatorStates.JamFound:
+                        parsedList.Add(JamByteToShow);
+                        switch (receivedByte)
+                        {
+                            case EscapeByte:
+                                _state = CommunicatorStates.EscapeFound;
+                                break;
+                            case JamByte:
+                                break;
+                            default:
+                                _state = CommunicatorStates.Standart;
+                                _receivedBuffer.Add(receivedByte);
+                                break;
+                        }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
 
-            var parsed = ParsePacket(_receivedBuffer, out var index);
-            _receivedBuffer.RemoveRange(0, index);
-            
-            return Encoding.ASCII.GetString(parsed.ToArray());
-        }
+            if (_receivedBuffer.Count > 0)
+            {
+                parsedList.AddRange(_receivedBuffer);
+                _receivedBuffer.Clear();
+            }
 
-        /// <summary>
-        /// Encode byte array to bit array with adding bit staffing
-        /// </summary>
-        /// <param name="inputBytes">Bytes to convert with bit staffing</param>
-        /// <returns>Converted input value</returns>
-        private IEnumerable<byte> Encode(IEnumerable<byte> inputBytes)
-        {
-            return inputBytes;
+            return Encoding.ASCII.GetString(parsedList.ToArray());
         }
 
         /// <summary>
@@ -178,20 +234,32 @@ namespace lab4.backend
         /// <returns>Generated packet</returns>
         private IEnumerable<byte> GeneratePacket(IEnumerable<byte> data)
         {
-            return data;
-        }
+            var res = new List<byte>();
 
-        /// <summary>
-        /// Parse packet
-        /// </summary>
-        /// <param name="packet">Packet to parse</param>
-        /// <param name="index">Index of first unused bool element in packet</param>
-        /// <returns>Data from packet if packet addressed to me, else return null</returns>
-        private IEnumerable<byte> ParsePacket(IEnumerable<byte> packet, out int index)
-        {
-            var enumerable = packet.ToList();
-            index = enumerable.Capacity;
-            return enumerable;
+            foreach (var b in data)
+            {
+                switch (b)
+                {
+                    case JamByte:
+                        res.AddRange(new[] {EscapeByte, JamByteSecondInEscape});
+                        break;
+                    case EscapeByte:
+                        res.AddRange(new[] {EscapeByte, EscapeByteSecondInEscape});
+                        break;
+                    default:
+                        res.Add(b);
+                        break;
+                }
+            }
+
+            return res;
         }
+    }
+
+    internal enum CommunicatorStates
+    {
+        Standart,
+        EscapeFound,
+        JamFound
     }
 }
