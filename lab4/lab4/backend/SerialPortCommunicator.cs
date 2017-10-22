@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using lab4.backend.exceptions;
 using lab4.Enums;
 
@@ -29,6 +30,8 @@ namespace lab4.backend
         private const byte JamByteToShow = (byte) 'X';
 
         private const int TimeToWaitNextByteInMs = 100;
+        private const int TimeToWaitCollisionInMs = 10;
+        private const int TimesToTryToSendValue = 10;
 
         private CommunicatorStates _state = CommunicatorStates.Standart;
 
@@ -107,7 +110,34 @@ namespace lab4.backend
             var dataToSend = GeneratePacket(Encoding.UTF8.GetBytes(s)).ToArray();
             foreach (var b in dataToSend)
             {
+                SendByte(b);
+            }
+        }
+
+        private void SendByte(byte b)
+        {
+            var r = new Random();
+            for (var i = 0; ;)
+            {
+                while (!IsChannelFree())
+                {
+                }
+
                 SerialPort.Write(new[] {b}, 0, 1);
+                Thread.Sleep(TimeToWaitCollisionInMs);
+                if (!IsCollisionDetected())
+                {
+                    return;
+                }
+                SerialPort.Write(new[] {JamByte}, 0, 1);
+                i++;
+
+                if (i >= TimesToTryToSendValue)
+                {
+                    throw new Exception($"So much attempts to write. Cannot write byte {b}"); 
+                }
+                
+                Thread.Sleep(r.Next(2 << i));
             }
         }
 
@@ -263,6 +293,24 @@ namespace lab4.backend
             }
 
             return res;
+        }
+
+        /// <summary>
+        /// Cheching is channel free
+        /// </summary>
+        /// <returns>true if channel is free, else false</returns>
+        private bool IsChannelFree()
+        {
+            return (DateTime.Now.TimeOfDay.Seconds % 2 != 0);
+        }
+
+        /// <summary>
+        /// Check is collision detected
+        /// </summary>
+        /// <returns>true if collision was detected, else false</returns>
+        private bool IsCollisionDetected()
+        {
+            return !IsChannelFree();
         }
     }
 
