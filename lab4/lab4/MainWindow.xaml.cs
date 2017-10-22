@@ -149,5 +149,15 @@ namespace lab4
                 ShowErrorBox(@"Cannot write to port");
             }
         }
+
+        /// <summary>
+        /// Close port with window
+        /// </summary>
+        /// <param name="sender">Not used</param>
+        /// <param name="e">Not used</param>
+        private void OnWindowClosed(object sender, EventArgs e)
+        {
+            _serialPortCommunicator.Close();
+        }
     }
 }

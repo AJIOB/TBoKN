@@ -9,6 +9,7 @@
         xmlns:backend="clr-namespace:lab4.backend"
         xmlns:sysPorts="clr-namespace:System.IO.Ports;assembly=System"
         mc:Ignorable="d"
+        Closed="OnWindowClosed"
         Title="TBoKN lab4. Made by AJIOB" Height="300" Width="525">
     <Window.Resources>
         <!--Baudrate-->
