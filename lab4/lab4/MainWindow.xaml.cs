@@ -159,5 +159,15 @@ namespace lab4
         {
             _serialPortCommunicator.Close();
         }
+
+        /// <summary>
+        /// Automatic scrolling window to bottom
+        /// </summary>
+        /// <param name="sender">Not used</param>
+        /// <param name="e">Not used</param>
+        private void OnOutputTextChanged(object sender, EventArgs e)
+        {
+            OutputTextBox.ScrollToEnd();
+        }
     }
 }
