@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
@@ -31,10 +32,21 @@ namespace lab4
         private readonly SerialPortCommunicator _serialPortCommunicator = new SerialPortCommunicator();
 
         public ObservableCollection<string> Ports { get; } = new ObservableCollection<string>();
+        private bool IsPortOpen => _serialPortCommunicator.IsOpen;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            _serialPortCommunicator.PropertyChanged += (sender, args) =>
+            {
+                if (args.PropertyName == nameof(SerialPortCommunicator.IsOpen))
+                {
+                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsPortOpen)));
+                }
+            };
         }
 
         private void StartStopButtonPressed(object sender, RoutedEventArgs e)
@@ -111,6 +123,11 @@ namespace lab4
                 InternalLogger.Log.Error("Cannot read data from port:", exception);
                 ShowErrorBox(exception.Message);
             }
+        }
+
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            PropertyChanged?.Invoke(this, e);
         }
     }
 }
