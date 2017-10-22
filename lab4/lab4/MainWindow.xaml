@@ -48,7 +48,8 @@
             <Grid>
                 <TextBox Name="InputTextBox" Margin="5" HorizontalScrollBarVisibility="Auto"
                          VerticalScrollBarVisibility="Auto" AcceptsReturn="True" AcceptsTab="True"
-                         IsUndoEnabled="False" />
+                         IsUndoEnabled="False" 
+                         IsEnabled="{Binding Path=IsPortOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
 
                 <!--Input text watermark-->
                 <TextBlock IsHitTestVisible="False" Text="Input your text here" VerticalAlignment="Top"
@@ -121,47 +122,40 @@
                 </Button.Content>
             </Button>
 
-            <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" Name="CurrentPortComboBox" DropDownOpened="PortsRefresh" >
-                <ComboBox.ItemsSource>
-                    <Binding Path="Ports">
-                        <Binding.RelativeSource>
-                            <RelativeSource Mode="FindAncestor" AncestorType="{x:Type local:MainWindow}"/>
-                        </Binding.RelativeSource>
-                    </Binding>
-                </ComboBox.ItemsSource>
-                <ComboBox.IsEnabled>
-                    <Binding Path="IsPortNotOpen">
-                        <Binding.RelativeSource>
-                            <RelativeSource Mode="FindAncestor" AncestorType="{x:Type local:MainWindow}"/>
-                        </Binding.RelativeSource>
-                    </Binding>
-                </ComboBox.IsEnabled>
-            </ComboBox>
+            <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" Name="CurrentPortComboBox" DropDownOpened="PortsRefresh" 
+                      ItemsSource="{Binding Path=Ports, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+                      IsEnabled="{Binding Path=IsPortNotOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+
             <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" Name="BaudrateComboBox" 
                       ItemsSource="{Binding Source={StaticResource Baudrate}}"
                       DisplayMemberPath="Description"
                       SelectedValuePath="Value"
-                      SelectedValue="9600"/>
+                      SelectedValue="9600"
+                      IsEnabled="{Binding Path=IsPortNotOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
             <ComboBox Grid.Row="2" Grid.Column="1" Margin="5" Name="DataBitsComboBox" 
                       ItemsSource="{Binding Source={StaticResource DataBits}}"
                       DisplayMemberPath="Description"
                       SelectedValuePath="Value"
-                      SelectedValue="8"/>
+                      SelectedValue="8"
+                      IsEnabled="{Binding Path=IsPortNotOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
             <ComboBox Grid.Row="3" Grid.Column="1" Margin="5" Name="StopBitsComboBox" 
                       ItemsSource="{Binding Source={StaticResource StopBits}}"
                       DisplayMemberPath="Description"
                       SelectedValuePath="Value"
-                      SelectedValue="1"/>
+                      SelectedValue="1"
+                      IsEnabled="{Binding Path=IsPortNotOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
             <ComboBox Grid.Row="4" Grid.Column="1" Margin="5" Name="ParityComboBox" 
                       ItemsSource="{Binding Source={StaticResource Parity}}"
                       DisplayMemberPath="Description"
                       SelectedValuePath="Value"
-                      SelectedValue="None"/>
+                      SelectedValue="None"
+                      IsEnabled="{Binding Path=IsPortNotOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
             <ComboBox Grid.Row="5" Grid.Column="1" Margin="5" Name="FlowControlComboBox" 
                       ItemsSource="{Binding Source={StaticResource FlowControl}}"
                       DisplayMemberPath="Description"
                       SelectedValuePath="Value"
-                      SelectedValue="None" IsEnabled="False"/>
+                      SelectedValue="None" 
+                      IsEnabled="False"/>
         </Grid>
     </Grid>
 </Window>
