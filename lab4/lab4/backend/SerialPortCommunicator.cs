@@ -79,7 +79,15 @@ namespace lab4.backend
         /// <param name="propertyName">Name of property</param>
         private void ChangeProperty<T>(ref T value, ref T maskedValue, string propertyName)
         {
-            var isChanged = !maskedValue.Equals(value);
+            bool isChanged;
+            if (maskedValue == null)
+            {
+                isChanged = (value != null);
+            }
+            else
+            {
+                isChanged = !maskedValue.Equals(value);
+            }
             maskedValue = value;
             if (isChanged)
             {
