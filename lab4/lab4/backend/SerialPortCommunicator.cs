@@ -28,6 +28,7 @@ namespace lab4.backend
         public delegate void ReceivedEventHandler(object sender, EventArgs e);
 
         public bool IsOpen => _serialPort != null;
+        public static string[] Ports => SerialPort.GetPortNames();
 
         /// <summary>
         /// Sending info to serial port

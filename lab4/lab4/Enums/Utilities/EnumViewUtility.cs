@@ -8,11 +8,11 @@ namespace lab4.Enums.Utilities
 {
     public static class EnumViewUtility
     {
-        public static object[] GetValuesAndDescriptions(Type enumType)
+        public static EnumViewObject[] GetValuesAndDescriptions(Type enumType)
         {
             var values = Enum.GetValues(enumType).Cast<object>();
             var valuesAndDescriptions = from value in values
-                select new
+                select new EnumViewObject
                 {
                     Value = value,
                     Description = value.GetType()
@@ -25,11 +25,11 @@ namespace lab4.Enums.Utilities
             return valuesAndDescriptions.ToArray();
         }
         
-        public static object[] GetValuesAndDescriptionsToString(Type enumType)
+        public static EnumViewObject[] GetValuesAndDescriptionsToString(Type enumType)
         {
             var values = Enum.GetValues(enumType).Cast<object>();
             var valuesAndDescriptions = from value in values
-                select new
+                select new EnumViewObject
                 {
                     Value = value,
                     Description = value.ToString()
@@ -37,7 +37,7 @@ namespace lab4.Enums.Utilities
             return valuesAndDescriptions.ToArray();
         }
 
-        public static object[] GetValuesAndDescriptionsStopBits()
+        public static EnumViewObject[] GetValuesAndDescriptionsStopBits()
         {
             var valuesDictionary = new Dictionary<StopBits, string> {
                 {StopBits.One, "1"},
@@ -45,7 +45,7 @@ namespace lab4.Enums.Utilities
                 {StopBits.Two, "2"}
             };
             var valuesAndDescriptions = from value in valuesDictionary
-                select new
+                select new EnumViewObject
                 {
                     Value = value.Key,
                     Description = value.Value
@@ -53,13 +53,13 @@ namespace lab4.Enums.Utilities
             return valuesAndDescriptions.ToArray();
         }
         
-        public static object[] GetValuesAndDescriptionsFlowControl()
+        public static EnumViewObject[] GetValuesAndDescriptionsFlowControl()
         {
             var valuesDictionary = new Dictionary<object, string> {
                 {StopBits.None, "None"}
             };
             var valuesAndDescriptions = from value in valuesDictionary
-                select new
+                select new EnumViewObject
                 {
                     Value = value.Key,
                     Description = value.Value

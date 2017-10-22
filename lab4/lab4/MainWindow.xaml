@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:lab4"
         xmlns:enums="clr-namespace:lab4.Enums"
         xmlns:enumUtils="clr-namespace:lab4.Enums.Utilities"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:backend="clr-namespace:lab4.backend"
         xmlns:sysPorts="clr-namespace:System.IO.Ports;assembly=System"
         mc:Ignorable="d"
         Title="TBoKN lab4. Made by AJIOB" Height="300" Width="525">
@@ -102,18 +102,26 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Current port:" VerticalAlignment="Center" HorizontalAlignment="Right"
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Current port:" VerticalAlignment="Center" HorizontalAlignment="Right"
                        Margin="5" />
-            <TextBlock Grid.Row="1" Text="Baudrate:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
-            <TextBlock Grid.Row="2" Text="Data bits:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
-            <TextBlock Grid.Row="3" Text="Stop bits:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
-            <TextBlock Grid.Row="4" Text="Parity:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
-            <TextBlock Grid.Row="5" Text="Flow control:" VerticalAlignment="Center" HorizontalAlignment="Right"
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Baudrate:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Data bits:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Stop bits:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Parity:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="Flow control:" VerticalAlignment="Center" HorizontalAlignment="Right"
                        Margin="5" />
 
-            <Button Grid.Row="6" Grid.ColumnSpan="2" Margin="5" Click="StartStopButtonPressed" />
+            <Button Grid.Row="6" Grid.ColumnSpan="2" Grid.Column="0" Margin="5" Click="StartStopButtonPressed" />
 
-            <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" Name="CurrentPortComboBox" />
+            <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" Name="CurrentPortComboBox" DropDownOpened="PortsRefresh" >
+                <ComboBox.ItemsSource>
+                    <Binding Path="Ports">
+                        <Binding.RelativeSource>
+                            <RelativeSource Mode="FindAncestor" AncestorType="{x:Type local:MainWindow}"></RelativeSource>
+                        </Binding.RelativeSource>
+                    </Binding>
+                </ComboBox.ItemsSource>
+            </ComboBox>
             <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" Name="BaudrateComboBox" 
                       ItemsSource="{Binding Source={StaticResource Baudrate}}"
                       DisplayMemberPath="Description"
