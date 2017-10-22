@@ -59,7 +59,10 @@ namespace lab4
                         (Parity) ((EnumViewObject) ParityComboBox.SelectedItem).Value,
                         (EDataBits) ((EnumViewObject) DataBitsComboBox.SelectedItem).Value,
                         (StopBits) ((EnumViewObject) StopBitsComboBox.SelectedItem).Value,
-                        delegate { LoadReceivedData(); });
+                        delegate
+                        {
+                            Dispatcher.Invoke(LoadReceivedData);
+                        });
                 }
                 catch (Exception exception)
                 {
