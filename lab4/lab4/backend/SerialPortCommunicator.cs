@@ -104,7 +104,7 @@ namespace lab4.backend
         public void Send(string s)
         {
             InternalLogger.Log.Debug($"Sending string: \"{s}\"");
-            var dataToSend = GeneratePacket(Encoding.ASCII.GetBytes(s)).ToArray();
+            var dataToSend = GeneratePacket(Encoding.UTF8.GetBytes(s)).ToArray();
             foreach (var b in dataToSend)
             {
                 SerialPort.Write(new[] {b}, 0, 1);
@@ -153,7 +153,17 @@ namespace lab4.backend
             //Reading data from serial port
             while (true)
             {
-                var received = SerialPort.ReadByte();
+                int received;
+                try
+                {
+                    received = SerialPort.ReadByte();
+                }
+                catch (TimeoutException)
+                {
+                    //not receiving more symbols, exiting
+                    break;
+                }
+
                 if (received < 0)
                 {
                     InternalLogger.Log.Info("End of the stream was read");
@@ -224,7 +234,7 @@ namespace lab4.backend
                 _receivedBuffer.Clear();
             }
 
-            return Encoding.ASCII.GetString(parsedList.ToArray());
+            return Encoding.UTF8.GetString(parsedList.ToArray());
         }
 
         /// <summary>
