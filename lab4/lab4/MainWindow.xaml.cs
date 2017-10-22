@@ -1,20 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using lab4.backend;
 using lab4.backend.exceptions;
 using lab4.Enums;
@@ -138,27 +126,24 @@ namespace lab4
         }
 
         /// <summary>
-        /// Call to change property
+        /// Send text to port
         /// </summary>
-        /// <typeparam name="T">Property type</typeparam>
-        /// <param name="value">New property value</param>
-        /// <param name="maskedValue">Field with old property value (masked field)</param>
-        /// <param name="propertyName">Name of property</param>
-        private void ChangeProperty<T>(ref T value, ref T maskedValue, string propertyName)
+        /// <param name="sender">Not used</param>
+        /// <param name="e">Not used</param>
+        private void SendText(object sender, EventArgs e)
         {
-            bool isChanged;
-            if (maskedValue == null)
+            try
             {
-                isChanged = (value != null);
+                if (InputTextBox.Text != "")
+                {
+                    _serialPortCommunicator.Send(InputTextBox.Text);
+                    InputTextBox.Text = "";
+                }
             }
-            else
+            catch (Exception exception)
             {
-                isChanged = !maskedValue.Equals(value);
-            }
-            maskedValue = value;
-            if (isChanged)
-            {
-                OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+                InternalLogger.Log.Error(@"Cannot write to port", exception);
+                ShowErrorBox(@"Cannot write to port");
             }
         }
     }
