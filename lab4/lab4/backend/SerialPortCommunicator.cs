@@ -29,9 +29,10 @@ namespace lab4.backend
 
         private const byte JamByteToShow = (byte) 'X';
 
-        private const int TimeToWaitNextByteInMs = 100;
-        private const int TimeToWaitCollisionInMs = 10;
-        private const int TimesToTryToSendValue = 10;
+        private const int TimeToWaitNextByteInMs = 5;
+        private const int TimeToWaitCollisionInMs = 2 * TimeToWaitNextByteInMs;
+        private const int TimesToTryToSendValue = 3;
+        private const int TimeSlotValueInMs = TimeToWaitCollisionInMs + TimeToWaitNextByteInMs + 1;
 
         private CommunicatorStates _state = CommunicatorStates.Standart;
 
@@ -121,6 +122,7 @@ namespace lab4.backend
             {
                 while (!IsChannelFree())
                 {
+                    Thread.Sleep(1);
                 }
 
                 SerialPort.Write(new[] {b}, 0, 1);
@@ -137,7 +139,7 @@ namespace lab4.backend
                     throw new Exception($"So much attempts to write. Cannot write byte {b}"); 
                 }
                 
-                Thread.Sleep(r.Next(2 << i));
+                Thread.Sleep(r.Next((2 << i) + 1) * TimeSlotValueInMs);
             }
         }
 
@@ -310,7 +312,7 @@ namespace lab4.backend
         /// <returns>true if collision was detected, else false</returns>
         private bool IsCollisionDetected()
         {
-            return !IsChannelFree();
+            return (DateTime.Now.TimeOfDay.Seconds % 2 == 0);
         }
     }
 

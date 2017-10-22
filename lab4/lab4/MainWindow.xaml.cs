@@ -16,8 +16,8 @@ namespace lab4
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private const string ErrorMessageBoxHeader = @"Oops, we have an error";
-        private const string StartStringText = "Start";
-        private const string StopStringText = "Stop";
+        private const string StartStringText = "Connect";
+        private const string StopStringText = "Disconnect";
 
         private readonly SerialPortCommunicator _serialPortCommunicator = new SerialPortCommunicator();
 
@@ -140,7 +140,6 @@ namespace lab4
                 if (InputTextBox.Text != "")
                 {
                     _serialPortCommunicator.Send(InputTextBox.Text);
-                    InputTextBox.Text = "";
                 }
             }
             catch (Exception exception)
@@ -148,6 +147,7 @@ namespace lab4
                 InternalLogger.Log.Error(@"Cannot write to port", exception);
                 ShowErrorBox(@"Cannot write to port");
             }
+            InputTextBox.Text = "";
         }
 
         /// <summary>
