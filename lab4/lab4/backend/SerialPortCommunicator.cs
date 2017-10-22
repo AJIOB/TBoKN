@@ -219,9 +219,12 @@ namespace lab4.backend
                                 break;
                             default:
                                 _state = CommunicatorStates.JamFound;
+                                _receivedBuffer.Clear();
+                                parsedList.Add(JamByteToShow);
                                 break;
                         }
                         break;
+                    case CommunicatorStates.JamFound:
                     case CommunicatorStates.Standart:
                         switch (receivedByte)
                         {
@@ -232,25 +235,13 @@ namespace lab4.backend
                                 break;
                             case JamByte:
                                 _state = CommunicatorStates.JamFound;
-                                break;
-                            default:
-                                parsedList.AddRange(_receivedBuffer);
                                 _receivedBuffer.Clear();
-                                _receivedBuffer.Add(receivedByte);
-                                break;
-                        }
-                        break;
-                    case CommunicatorStates.JamFound:
-                        parsedList.Add(JamByteToShow);
-                        switch (receivedByte)
-                        {
-                            case EscapeByte:
-                                _state = CommunicatorStates.EscapeFound;
-                                break;
-                            case JamByte:
+                                parsedList.Add(JamByteToShow);
                                 break;
                             default:
                                 _state = CommunicatorStates.Standart;
+                                parsedList.AddRange(_receivedBuffer);
+                                _receivedBuffer.Clear();
                                 _receivedBuffer.Add(receivedByte);
                                 break;
                         }
