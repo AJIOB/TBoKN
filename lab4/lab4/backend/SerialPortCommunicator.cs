@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
@@ -11,24 +12,95 @@ namespace lab4.backend
 {
     public class SerialPortCommunicator
     {
-        private SerialPort _serialPort;
+        private SerialPort _maskedSerialPort;
+
+        private SerialPort SerialPort
+        {
+            get => _maskedSerialPort;
+            set => ChangeProperty(ref value, ref _maskedSerialPort, nameof(SerialPort));
+        }
+
         private const int BitsInByte = 8;
         private const byte StartStopByte = 0x7E;
 
         private const byte BitStaffingCheckMask = 0x7E;
         private const byte BitStaffingAndMask = 0xFE;
+
         // not 0x7F, because start parsing (receiving) data from low-order bit
         private const byte BitStaffingReplaceSymbol = 0xFE;
+
         private const byte GetLastBitMask = 0x01;
         private readonly List<bool> _receivedBuffer = new List<bool>();
 
-        public byte MyId { get; set; } = 0;
-        public byte PartnerId { get; set; } = 0;
+        private byte _myId = 0;
+        private byte _partnerId = 0;
+
+        public byte MyId
+        {
+            get => _myId;
+            set => ChangeProperty(ref value, ref _myId, nameof(MyId));
+        }
+
+        public byte PartnerId
+        {
+            get => _partnerId;
+            set => ChangeProperty(ref value, ref _partnerId, nameof(PartnerId));
+        }
 
         public delegate void ReceivedEventHandler(object sender, EventArgs e);
 
-        public bool IsOpen => _serialPort != null;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private bool _isOpen;
+
+        public bool IsOpen
+        {
+            get => _isOpen;
+            private set => ChangeProperty(ref value, ref _isOpen, nameof(IsOpen));
+        }
+
         public static string[] Ports => SerialPort.GetPortNames();
+
+        /// <summary>
+        /// Call when property was changed
+        /// </summary>
+        /// <param name="name"></param>
+        private void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        /// <summary>
+        /// Call to change property
+        /// </summary>
+        /// <typeparam name="T">Property type</typeparam>
+        /// <param name="value">New property value</param>
+        /// <param name="maskedValue">Field with old property value (masked field)</param>
+        /// <param name="propertyName">Name of property</param>
+        private void ChangeProperty<T>(ref T value, ref T maskedValue, string propertyName)
+        {
+            var isChanged = !maskedValue.Equals(value);
+            maskedValue = value;
+            if (isChanged)
+            {
+                OnPropertyChanged(propertyName);
+            }
+        }
+
+        /// <summary>
+        /// Create communicator and initialize all property changes
+        /// </summary>
+        public SerialPortCommunicator()
+        {
+            // if serial port was changed => is open was changed
+            PropertyChanged += (sender, args) =>
+            {
+                if (args.PropertyName == nameof(SerialPort))
+                {
+                    IsOpen = (SerialPort != null);
+                }
+            };
+        }
 
         /// <summary>
         /// Sending info to serial port
@@ -38,7 +110,7 @@ namespace lab4.backend
         {
             InternalLogger.Log.Debug($"Sending string: \"{s}\"");
             var dataToSend = GeneratePacket(Encoding.UTF8.GetBytes(s).ToArray()).ToArray();
-            _serialPort.Write(dataToSend, 0, dataToSend.Length);
+            SerialPort.Write(dataToSend, 0, dataToSend.Length);
         }
 
         /// <summary>
@@ -47,8 +119,8 @@ namespace lab4.backend
         public void Close()
         {
             if (!IsOpen) return;
-            _serialPort.Close();
-            _serialPort = null;
+            SerialPort.Close();
+            SerialPort = null;
         }
 
         /// <summary>
@@ -64,10 +136,10 @@ namespace lab4.backend
             ReceivedEventHandler receivedEventHandler)
         {
             if (IsOpen) return;
-            _serialPort = new SerialPort(portName, (int) baudRate, parity, (int) dataBits, stopBits);
-            _serialPort.Open();
+            SerialPort = new SerialPort(portName, (int) baudRate, parity, (int) dataBits, stopBits);
+            SerialPort.Open();
             if (receivedEventHandler != null)
-                _serialPort.DataReceived +=
+                SerialPort.DataReceived +=
                     delegate(object sender, SerialDataReceivedEventArgs args) { receivedEventHandler(sender, args); };
             _receivedBuffer.Clear();
         }
@@ -79,9 +151,9 @@ namespace lab4.backend
         public string ReadExisting()
         {
             //Reading data from serial port
-            while (_serialPort.BytesToRead > 0)
+            while (SerialPort.BytesToRead > 0)
             {
-                var received = _serialPort.ReadByte();
+                var received = SerialPort.ReadByte();
                 if (received < 0)
                 {
                     InternalLogger.Log.Info("End of the stream was read");
