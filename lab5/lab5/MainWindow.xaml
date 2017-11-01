@@ -1,0 +1,159 @@
+﻿<Window x:Class="lab4.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:lab4"
+        xmlns:enums="clr-namespace:lab4.Enums"
+        xmlns:enumUtils="clr-namespace:lab4.Enums.Utilities"
+        xmlns:sysPorts="clr-namespace:System.IO.Ports;assembly=System"
+        mc:Ignorable="d"
+        Closed="OnWindowClosed"
+        Title="TBoKN lab4. Made by AJIOB" Height="300" Width="525">
+    <Window.Resources>
+        <!--Baudrate-->
+        <ObjectDataProvider ObjectType="enumUtils:EnumViewUtility" MethodName="GetValuesAndDescriptions" x:Key="Baudrate">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="enums:EBaudrate"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <!--Data bits-->
+        <ObjectDataProvider ObjectType="enumUtils:EnumViewUtility" MethodName="GetValuesAndDescriptions" x:Key="DataBits">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="enums:EDataBits" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <!--Parity-->
+        <ObjectDataProvider ObjectType="enumUtils:EnumViewUtility" MethodName="GetValuesAndDescriptionsToString" x:Key="Parity">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="sysPorts:Parity" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <!--Stop bits-->
+        <ObjectDataProvider ObjectType="enumUtils:EnumViewUtility" MethodName="GetValuesAndDescriptionsStopBits" x:Key="StopBits"/>
+        <!--Flow control-->
+        <ObjectDataProvider ObjectType="enumUtils:EnumViewUtility" MethodName="GetValuesAndDescriptionsFlowControl" x:Key="FlowControl"/>
+    </Window.Resources>
+    <Grid DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*" />
+                <RowDefinition Height="7*" />
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <TextBox Name="InputTextBox" Margin="5" HorizontalScrollBarVisibility="Auto"
+                         VerticalScrollBarVisibility="Auto" AcceptsReturn="True" AcceptsTab="True"
+                         IsUndoEnabled="False" 
+                         IsEnabled="{Binding Path=IsPortOpen}" TextChanged="SendText"/>
+
+                <!--Input text watermark-->
+                <TextBlock IsHitTestVisible="False" VerticalAlignment="Top"
+                           HorizontalAlignment="Left" Margin="8,6,0,0" Foreground="DarkGray">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Setter Property="Text" Value="Input your text here" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Text, ElementName=InputTextBox}" Value="">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=IsPortOpen}" 
+                                             Value="False">
+                                    <Setter Property="Text" Value="First of all, start connection, please" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <TextBox Name="OutputTextBox" Margin="5" HorizontalScrollBarVisibility="Auto"
+                         VerticalScrollBarVisibility="Auto" AcceptsReturn="True" AcceptsTab="True" IsReadOnly="True" TextChanged="OnOutputTextChanged" />
+
+                <!--Output text watermark-->
+                <TextBlock IsHitTestVisible="False" Text="Output text will be here" VerticalAlignment="Top"
+                           HorizontalAlignment="Left" Margin="8,6,0,0" Foreground="DarkGray">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Text, ElementName=OutputTextBox}" Value="">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Current port:" VerticalAlignment="Center" HorizontalAlignment="Right"
+                       Margin="5" />
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Baudrate:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Data bits:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Stop bits:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Parity:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="Flow control:" VerticalAlignment="Center" HorizontalAlignment="Right"
+                       Margin="5" />
+
+            <Button Grid.Row="6" Grid.ColumnSpan="2" Grid.Column="0" Margin="5" Click="StartStopButtonPressed" Name="StartStopButton"
+                    Content="{Binding Path=StartStopButtonText}"/>
+
+            <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" Name="CurrentPortComboBox" DropDownOpened="PortsRefresh" 
+                      ItemsSource="{Binding Path=Ports}"
+                      IsEnabled="{Binding Path=IsPortNotOpen}"/>
+
+            <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" Name="BaudrateComboBox" 
+                      ItemsSource="{Binding Source={StaticResource Baudrate}}"
+                      DisplayMemberPath="Description"
+                      SelectedValuePath="Value"
+                      SelectedValue="9600"
+                      IsEnabled="{Binding Path=IsPortNotOpen}"/>
+            <ComboBox Grid.Row="2" Grid.Column="1" Margin="5" Name="DataBitsComboBox" 
+                      ItemsSource="{Binding Source={StaticResource DataBits}}"
+                      DisplayMemberPath="Description"
+                      SelectedValuePath="Value"
+                      SelectedValue="8"
+                      IsEnabled="{Binding Path=IsPortNotOpen}"/>
+            <ComboBox Grid.Row="3" Grid.Column="1" Margin="5" Name="StopBitsComboBox" 
+                      ItemsSource="{Binding Source={StaticResource StopBits}}"
+                      DisplayMemberPath="Description"
+                      SelectedValuePath="Value"
+                      SelectedValue="1"
+                      IsEnabled="{Binding Path=IsPortNotOpen}"/>
+            <ComboBox Grid.Row="4" Grid.Column="1" Margin="5" Name="ParityComboBox" 
+                      ItemsSource="{Binding Source={StaticResource Parity}}"
+                      DisplayMemberPath="Description"
+                      SelectedValuePath="Value"
+                      SelectedValue="None"
+                      IsEnabled="{Binding Path=IsPortNotOpen}"/>
+            <ComboBox Grid.Row="5" Grid.Column="1" Margin="5" Name="FlowControlComboBox" 
+                      ItemsSource="{Binding Source={StaticResource FlowControl}}"
+                      DisplayMemberPath="Description"
+                      SelectedValuePath="Value"
+                      SelectedValue="None" 
+                      IsEnabled="False"/>
+        </Grid>
+    </Grid>
+</Window>
