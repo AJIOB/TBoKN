@@ -7,10 +7,9 @@
         xmlns:enums="clr-namespace:lab5.Enums"
         xmlns:enumUtils="clr-namespace:lab5.Enums.Utilities"
         xmlns:sysPorts="clr-namespace:System.IO.Ports;assembly=System" 
-        xmlns:lab5="clr-namespace:lab5"
         mc:Ignorable="d"
         Closed="OnWindowClosed"
-        Title="TBoKN lab5. Made by AJIOB" Height="300" Width="525">
+        Title="TBoKN lab5. Made by AJIOB" Height="350" Width="525">
     <Window.Resources>
         <!--Baudrate-->
         <ObjectDataProvider ObjectType="enumUtils:EnumViewUtility" MethodName="GetValuesAndDescriptions" x:Key="Baudrate">
@@ -107,6 +106,8 @@
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Current port:" VerticalAlignment="Center" HorizontalAlignment="Right"
@@ -117,8 +118,10 @@
             <TextBlock Grid.Row="4" Grid.Column="0" Text="Parity:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
             <TextBlock Grid.Row="5" Grid.Column="0" Text="Flow control:" VerticalAlignment="Center" HorizontalAlignment="Right"
                        Margin="5" />
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="My ID:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
+            <TextBlock Grid.Row="7" Grid.Column="0" Text="Partner ID:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
 
-            <Button Grid.Row="6" Grid.ColumnSpan="2" Grid.Column="0" Margin="5" Click="StartStopButtonPressed" Name="StartStopButton"
+            <Button Grid.Row="8" Grid.ColumnSpan="2" Grid.Column="0" Margin="5" Click="StartStopButtonPressed" Name="StartStopButton"
                     Content="{Binding Path=StartStopButtonText}"/>
 
             <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" Name="CurrentPortComboBox" DropDownOpened="PortsRefresh" 
@@ -155,6 +158,13 @@
                       SelectedValuePath="Value"
                       SelectedValue="None" 
                       IsEnabled="False"/>
+            <TextBox Grid.Row="6" Grid.Column="1" Margin="5" Name="SourceIdTextBox" 
+                     VerticalAlignment="Center"
+                     IsEnabled="{Binding Path=IsPortNotOpen}"
+                     PreviewTextInput="NumberValidationTextBox"/>
+            <TextBox Grid.Row="7" Grid.Column="1" Margin="5" Name="DestIdTextBox" 
+                     VerticalAlignment="Center"
+                     PreviewTextInput="NumberValidationTextBox"/>
         </Grid>
     </Grid>
 </Window>

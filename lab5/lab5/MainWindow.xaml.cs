@@ -2,7 +2,9 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO.Ports;
+using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Input;
 using lab5.Backend;
 using lab5.Backend.Exceptions;
 using lab5.Enums;
@@ -168,6 +170,17 @@ namespace lab5
         private void OnOutputTextChanged(object sender, EventArgs e)
         {
             OutputTextBox.ScrollToEnd();
+        }
+
+        /// <summary>
+        /// Automatic blocking input non-number symbols
+        /// </summary>
+        /// <param name="sender">Not used</param>
+        /// <param name="e">Object to handle</param>
+        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
         }
     }
 }
