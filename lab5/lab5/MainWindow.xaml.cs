@@ -20,6 +20,7 @@ namespace lab5
     {
         private const string ErrorMessageBoxHeader = @"Oops, we have an error";
         private const string ErrorLoadingVm = "Cannot connect viewModel to MainWindow";
+        private const int DefaultNumValue = 0;
         private readonly MainWindowWm _vm;
 
         public MainWindow()
@@ -35,23 +36,15 @@ namespace lab5
 
         private void StartStopButtonPressed(object sender, RoutedEventArgs e)
         {
-            if (_vm.Communicator.IsOpen)
+            if (_vm.IsPortOpen)
             {
-                _vm.Communicator.Close();
+                _vm.CloseConnection();
             }
             else
             {
                 try
                 {
-                    _vm.Communicator.Open(CurrentPortComboBox.SelectedItem.ToString(),
-                        (EBaudrate)((EnumViewObject)BaudrateComboBox.SelectedItem).Value,
-                        (Parity)((EnumViewObject)ParityComboBox.SelectedItem).Value,
-                        (EDataBits)((EnumViewObject)DataBitsComboBox.SelectedItem).Value,
-                        (StopBits)((EnumViewObject)StopBitsComboBox.SelectedItem).Value,
-                        delegate
-                        {
-                            Dispatcher.Invoke(LoadReceivedData);
-                        });
+                    _vm.OpenConnection();
                 }
                 catch (Exception exception)
                 {
@@ -70,44 +63,12 @@ namespace lab5
         {
             try
             {
-                if (InputTextBox.Text != "")
-                {
-                    _vm.Communicator.Send(InputTextBox.Text);
-                }
+                _vm.SendText();
             }
             catch (Exception exception)
             {
                 InternalLogger.Log.Error(@"Cannot write to port", exception);
                 ShowErrorBox(@"Cannot write to port");
-            }
-            InputTextBox.Text = "";
-        }
-
-        /// <summary>
-        /// Load received data from serial port
-        /// </summary>
-        private void LoadReceivedData()
-        {
-            try
-            {
-                string s;
-                do
-                {
-                    try
-                    {
-                        s = _vm.Communicator.ReadExisting();
-                        OutputTextBox.AppendText(s);
-                    }
-                    catch (CannotFindStartSymbolException)
-                    {
-                        break;
-                    }
-                } while (s != "");
-            }
-            catch (Exception exception)
-            {
-                InternalLogger.Log.Error("Cannot read data from port:", exception);
-                ShowErrorBox(exception.Message);
             }
         }
 
@@ -128,7 +89,7 @@ namespace lab5
         /// <param name="e">Not used</param>
         private void OnWindowClosed(object sender, EventArgs e)
         {
-            _vm.Communicator.Close();
+            _vm.CloseConnection();
         }
 
         /// <summary>

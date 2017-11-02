@@ -60,6 +60,7 @@
                 <TextBox Name="InputTextBox" Margin="5" HorizontalScrollBarVisibility="Auto"
                          VerticalScrollBarVisibility="Auto" AcceptsReturn="True" AcceptsTab="True"
                          IsUndoEnabled="False" 
+                         Text="{Binding Path=TextToSend}"
                          IsEnabled="{Binding Path=IsPortOpen}" TextChanged="SendText"/>
 
                 <!--Input text watermark-->
@@ -85,6 +86,7 @@
 
             <Grid Grid.Row="1">
                 <TextBox Name="OutputTextBox" Margin="5" HorizontalScrollBarVisibility="Auto"
+                         Text="{Binding Path=ReceivedText}"
                          VerticalScrollBarVisibility="Auto" AcceptsReturn="True" AcceptsTab="True" IsReadOnly="True" TextChanged="OnOutputTextChanged" />
 
                 <!--Output text watermark-->
@@ -135,48 +137,54 @@
             <Button Grid.Row="8" Grid.ColumnSpan="2" Grid.Column="0" Margin="5" Click="StartStopButtonPressed" Name="StartStopButton"
                     Content="{Binding Path=StartStopButtonText}"/>
 
-            <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" Name="CurrentPortComboBox" DropDownOpened="PortsRefresh"
+            <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" DropDownOpened="PortsRefresh"
                       ItemsSource="{Binding Path=Ports}"
+                      SelectedItem="{Binding Path=PortSelected}"
                       IsEnabled="{Binding Path=IsPortNotOpen}" />
 
-            <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" Name="BaudrateComboBox" 
+            <ComboBox Grid.Row="1" Grid.Column="1" Margin="5"
                       ItemsSource="{Binding Source={StaticResource Baudrate}}"
                       DisplayMemberPath="Description"
                       SelectedValuePath="Value"
                       SelectedValue="9600"
+                      SelectedItem="{Binding Path=BaudrateSelected}"
                       IsEnabled="{Binding Path=IsPortNotOpen}"/>
-            <ComboBox Grid.Row="2" Grid.Column="1" Margin="5" Name="DataBitsComboBox" 
+            <ComboBox Grid.Row="2" Grid.Column="1" Margin="5"
                       ItemsSource="{Binding Source={StaticResource DataBits}}"
                       DisplayMemberPath="Description"
                       SelectedValuePath="Value"
                       SelectedValue="8"
+                      SelectedItem="{Binding Path=DataBitsSelected}"
                       IsEnabled="{Binding Path=IsPortNotOpen}"/>
-            <ComboBox Grid.Row="3" Grid.Column="1" Margin="5" Name="StopBitsComboBox" 
+            <ComboBox Grid.Row="3" Grid.Column="1" Margin="5"
                       ItemsSource="{Binding Source={StaticResource StopBits}}"
                       DisplayMemberPath="Description"
                       SelectedValuePath="Value"
                       SelectedValue="1"
+                      SelectedItem="{Binding Path=StopBitsSelected}"
                       IsEnabled="{Binding Path=IsPortNotOpen}"/>
-            <ComboBox Grid.Row="4" Grid.Column="1" Margin="5" Name="ParityComboBox" 
+            <ComboBox Grid.Row="4" Grid.Column="1" Margin="5"
                       ItemsSource="{Binding Source={StaticResource Parity}}"
                       DisplayMemberPath="Description"
                       SelectedValuePath="Value"
                       SelectedValue="None"
                       IsEnabled="{Binding Path=IsPortNotOpen}"/>
-            <ComboBox Grid.Row="5" Grid.Column="1" Margin="5" Name="FlowControlComboBox" 
+            <ComboBox Grid.Row="5" Grid.Column="1" Margin="5"
                       ItemsSource="{Binding Source={StaticResource FlowControl}}"
                       DisplayMemberPath="Description"
                       SelectedValuePath="Value"
                       SelectedValue="None" 
                       IsEnabled="False"/>
-            <TextBox Grid.Row="6" Grid.Column="1" Margin="5" Name="SourceIdTextBox" 
+            <TextBox Grid.Row="6" Grid.Column="1" Margin="5"
                      VerticalAlignment="Center"
                      IsEnabled="{Binding Source=IsPortNotOpen}"
                      PreviewTextInput="NumberValidationTextBox"
                      IsReadOnly="{Binding Path=IsPortOpen}"
+                     Text="{Binding Path=SourceId}"
                      />
-            <TextBox Grid.Row="7" Grid.Column="1" Margin="5" Name="DestIdTextBox" 
+            <TextBox Grid.Row="7" Grid.Column="1" Margin="5"
                      VerticalAlignment="Center"
+                     Text="{Binding Path=DestinationId}"
                      PreviewTextInput="NumberValidationTextBox"/>
         </Grid>
     </Grid>
