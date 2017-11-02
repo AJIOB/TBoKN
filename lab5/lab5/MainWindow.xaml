@@ -3,14 +3,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        
         xmlns:local="clr-namespace:lab5"
         xmlns:enums="clr-namespace:lab5.Enums"
         xmlns:enumUtils="clr-namespace:lab5.Enums.Utilities"
         xmlns:sysPorts="clr-namespace:System.IO.Ports;assembly=System" 
+        xmlns:vm="clr-namespace:lab5.ViewModels"
         mc:Ignorable="d"
         Closed="OnWindowClosed"
+        DataContext="{StaticResource MainWindowWm}"
         Title="TBoKN lab5. Made by AJIOB" Height="350" Width="525">
     <Window.Resources>
+        <ObjectDataProvider x:Key="IsPortOpen" ObjectType="{x:Type vm:MainWindowWm}" IsAsynchronous="True"
+                            MethodName="get_IsPortOpen" />
+        <ObjectDataProvider x:Key="IsPortNotOpen" ObjectType="{x:Type vm:MainWindowWm}" IsAsynchronous="True"
+                            MethodName="get_IsPortNotOpen" />
+        <ObjectDataProvider x:Key="Ports" ObjectType="{x:Type vm:MainWindowWm}" IsAsynchronous="True"
+                            MethodName="get_Ports" />
+        <ObjectDataProvider x:Key="StartStopButtonText" ObjectType="{x:Type vm:MainWindowWm}" IsAsynchronous="True"
+                            MethodName="get_StartStopButtonText" />
         <!--Baudrate-->
         <ObjectDataProvider ObjectType="enumUtils:EnumViewUtility" MethodName="GetValuesAndDescriptions" x:Key="Baudrate">
             <ObjectDataProvider.MethodParameters>
@@ -34,7 +45,7 @@
         <!--Flow control-->
         <ObjectDataProvider ObjectType="enumUtils:EnumViewUtility" MethodName="GetValuesAndDescriptionsFlowControl" x:Key="FlowControl"/>
     </Window.Resources>
-    <Grid DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
@@ -62,7 +73,7 @@
                                 <DataTrigger Binding="{Binding Text, ElementName=InputTextBox}" Value="">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=IsPortOpen}" 
+                                <DataTrigger Binding="{Binding Source={StaticResource IsPortOpen}}" 
                                              Value="False">
                                     <Setter Property="Text" Value="First of all, start connection, please" />
                                 </DataTrigger>
@@ -122,36 +133,36 @@
             <TextBlock Grid.Row="7" Grid.Column="0" Text="Partner ID:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" />
 
             <Button Grid.Row="8" Grid.ColumnSpan="2" Grid.Column="0" Margin="5" Click="StartStopButtonPressed" Name="StartStopButton"
-                    Content="{Binding Path=StartStopButtonText}"/>
+                    Content="{Binding Source={StaticResource StartStopButtonText}}"/>
 
-            <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" Name="CurrentPortComboBox" DropDownOpened="PortsRefresh" 
-                      ItemsSource="{Binding Path=Ports}"
-                      IsEnabled="{Binding Path=IsPortNotOpen}"/>
+            <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" Name="CurrentPortComboBox" DropDownOpened="PortsRefresh"
+                      ItemsSource="{Binding Source={StaticResource Ports}}"
+                      IsEnabled="{Binding Source=IsPortNotOpen}" />
 
             <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" Name="BaudrateComboBox" 
                       ItemsSource="{Binding Source={StaticResource Baudrate}}"
                       DisplayMemberPath="Description"
                       SelectedValuePath="Value"
                       SelectedValue="9600"
-                      IsEnabled="{Binding Path=IsPortNotOpen}"/>
+                      IsEnabled="{Binding Source=IsPortNotOpen}"/>
             <ComboBox Grid.Row="2" Grid.Column="1" Margin="5" Name="DataBitsComboBox" 
                       ItemsSource="{Binding Source={StaticResource DataBits}}"
                       DisplayMemberPath="Description"
                       SelectedValuePath="Value"
                       SelectedValue="8"
-                      IsEnabled="{Binding Path=IsPortNotOpen}"/>
+                      IsEnabled="{Binding Source=IsPortNotOpen}"/>
             <ComboBox Grid.Row="3" Grid.Column="1" Margin="5" Name="StopBitsComboBox" 
                       ItemsSource="{Binding Source={StaticResource StopBits}}"
                       DisplayMemberPath="Description"
                       SelectedValuePath="Value"
                       SelectedValue="1"
-                      IsEnabled="{Binding Path=IsPortNotOpen}"/>
+                      IsEnabled="{Binding Source=IsPortNotOpen}"/>
             <ComboBox Grid.Row="4" Grid.Column="1" Margin="5" Name="ParityComboBox" 
                       ItemsSource="{Binding Source={StaticResource Parity}}"
                       DisplayMemberPath="Description"
                       SelectedValuePath="Value"
                       SelectedValue="None"
-                      IsEnabled="{Binding Path=IsPortNotOpen}"/>
+                      IsEnabled="{Binding Source=IsPortNotOpen}"/>
             <ComboBox Grid.Row="5" Grid.Column="1" Margin="5" Name="FlowControlComboBox" 
                       ItemsSource="{Binding Source={StaticResource FlowControl}}"
                       DisplayMemberPath="Description"
@@ -160,7 +171,7 @@
                       IsEnabled="False"/>
             <TextBox Grid.Row="6" Grid.Column="1" Margin="5" Name="SourceIdTextBox" 
                      VerticalAlignment="Center"
-                     IsEnabled="{Binding Path=IsPortNotOpen}"
+                     IsEnabled="{Binding Source=IsPortNotOpen}"
                      PreviewTextInput="NumberValidationTextBox"/>
             <TextBox Grid.Row="7" Grid.Column="1" Margin="5" Name="DestIdTextBox" 
                      VerticalAlignment="Center"

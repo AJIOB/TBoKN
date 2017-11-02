@@ -9,58 +9,45 @@ using lab5.Backend;
 using lab5.Backend.Exceptions;
 using lab5.Enums;
 using lab5.Enums.Utilities;
+using lab5.ViewModels;
 
 namespace lab5
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    public partial class MainWindow : Window
     {
         private const string ErrorMessageBoxHeader = @"Oops, we have an error";
-        private const string StartStringText = "Connect";
-        private const string StopStringText = "Disconnect";
-
-        private readonly SerialPortCommunicator _serialPortCommunicator = new SerialPortCommunicator();
-
-        public ObservableCollection<string> Ports { get; } = new ObservableCollection<string>();
-        public bool IsPortOpen => _serialPortCommunicator.IsOpen;
-        public bool IsPortNotOpen => !IsPortOpen;
-
-        public string StartStopButtonText => IsPortOpen ? StopStringText : StartStringText;
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        private const string ErrorLoadingVm = "Cannot connect viewModel to MainWindow";
+        private readonly MainWindowWm _vm;
 
         public MainWindow()
         {
             InitializeComponent();
-
-            _serialPortCommunicator.PropertyChanged += (sender, args) =>
+            _vm = DataContext as MainWindowWm; //Get VM from view's DataContext
+            if (_vm == null)
             {
-                if (args.PropertyName == nameof(SerialPortCommunicator.IsOpen))
-                {
-                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsPortOpen)));
-                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsPortNotOpen)));
-                    OnPropertyChanged(new PropertyChangedEventArgs(nameof(StartStopButtonText)));
-                }
-            };
+                InternalLogger.Log.Debug(ErrorLoadingVm);
+                ShowErrorBox(ErrorLoadingVm);
+            }
         }
 
         private void StartStopButtonPressed(object sender, RoutedEventArgs e)
         {
-            if (_serialPortCommunicator.IsOpen)
+            if (_vm.Communicator.IsOpen)
             {
-                _serialPortCommunicator.Close();
+                _vm.Communicator.Close();
             }
             else
             {
                 try
                 {
-                    _serialPortCommunicator.Open(CurrentPortComboBox.SelectedItem.ToString(),
-                        (EBaudrate) ((EnumViewObject) BaudrateComboBox.SelectedItem).Value,
-                        (Parity) ((EnumViewObject) ParityComboBox.SelectedItem).Value,
-                        (EDataBits) ((EnumViewObject) DataBitsComboBox.SelectedItem).Value,
-                        (StopBits) ((EnumViewObject) StopBitsComboBox.SelectedItem).Value,
+                    _vm.Communicator.Open(CurrentPortComboBox.SelectedItem.ToString(),
+                        (EBaudrate)((EnumViewObject)BaudrateComboBox.SelectedItem).Value,
+                        (Parity)((EnumViewObject)ParityComboBox.SelectedItem).Value,
+                        (EDataBits)((EnumViewObject)DataBitsComboBox.SelectedItem).Value,
+                        (StopBits)((EnumViewObject)StopBitsComboBox.SelectedItem).Value,
                         delegate
                         {
                             Dispatcher.Invoke(LoadReceivedData);
@@ -75,26 +62,25 @@ namespace lab5
         }
 
         /// <summary>
-        /// Show error box with message
-        /// </summary>
-        /// <param name="errorText">Message to show</param>
-        private static void ShowErrorBox(string errorText)
-        {
-            MessageBox.Show(errorText, ErrorMessageBoxHeader, MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-
-        /// <summary>
-        /// Refresh port list
+        /// Send text to port
         /// </summary>
         /// <param name="sender">Not used</param>
         /// <param name="e">Not used</param>
-        private void PortsRefresh(object sender, EventArgs e)
+        private void SendText(object sender, EventArgs e)
         {
-            Ports.Clear();
-            foreach (var port in SerialPortCommunicator.Ports)
+            try
             {
-                Ports.Add(port);
+                if (InputTextBox.Text != "")
+                {
+                    _vm.Communicator.Send(InputTextBox.Text);
+                }
             }
+            catch (Exception exception)
+            {
+                InternalLogger.Log.Error(@"Cannot write to port", exception);
+                ShowErrorBox(@"Cannot write to port");
+            }
+            InputTextBox.Text = "";
         }
 
         /// <summary>
@@ -109,7 +95,7 @@ namespace lab5
                 {
                     try
                     {
-                        s = _serialPortCommunicator.ReadExisting();
+                        s = _vm.Communicator.ReadExisting();
                         OutputTextBox.AppendText(s);
                     }
                     catch (CannotFindStartSymbolException)
@@ -125,31 +111,14 @@ namespace lab5
             }
         }
 
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            PropertyChanged?.Invoke(this, e);
-        }
-
         /// <summary>
-        /// Send text to port
+        /// Refresh port list
         /// </summary>
         /// <param name="sender">Not used</param>
         /// <param name="e">Not used</param>
-        private void SendText(object sender, EventArgs e)
+        private void PortsRefresh(object sender, EventArgs e)
         {
-            try
-            {
-                if (InputTextBox.Text != "")
-                {
-                    _serialPortCommunicator.Send(InputTextBox.Text);
-                }
-            }
-            catch (Exception exception)
-            {
-                InternalLogger.Log.Error(@"Cannot write to port", exception);
-                ShowErrorBox(@"Cannot write to port");
-            }
-            InputTextBox.Text = "";
+            _vm.PortsRefresh();
         }
 
         /// <summary>
@@ -159,7 +128,7 @@ namespace lab5
         /// <param name="e">Not used</param>
         private void OnWindowClosed(object sender, EventArgs e)
         {
-            _serialPortCommunicator.Close();
+            _vm.Communicator.Close();
         }
 
         /// <summary>
@@ -181,6 +150,15 @@ namespace lab5
         {
             Regex regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
+        }
+
+        /// <summary>
+        /// Show error box with message
+        /// </summary>
+        /// <param name="errorText">Message to show</param>
+        public static void ShowErrorBox(string errorText)
+        {
+            MessageBox.Show(errorText, ErrorMessageBoxHeader, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

@@ -2,8 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:lab5"
+             xmlns:vms="clr-namespace:lab5.ViewModels"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <vms:MainWindowWm x:Key="MainWindowWm" />
     </Application.Resources>
 </Application>
