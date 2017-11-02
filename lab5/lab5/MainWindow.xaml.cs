@@ -3,12 +3,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO.Ports;
 using System.Windows;
-using lab4.Enums;
-using lab4.Enums.Utilities;
 using lab5.Backend;
 using lab5.Backend.Exceptions;
+using lab5.Enums;
+using lab5.Enums.Utilities;
 
-namespace lab4
+namespace lab5
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

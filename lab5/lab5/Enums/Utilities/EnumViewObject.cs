@@ -1,4 +1,4 @@
-﻿namespace lab4.Enums.Utilities
+﻿namespace lab5.Enums.Utilities
 {
     public class EnumViewObject
     {

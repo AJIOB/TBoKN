@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.IO.Ports;
 using System.Linq;
 
-namespace lab4.Enums.Utilities
+namespace lab5.Enums.Utilities
 {
     public static class EnumViewUtility
     {

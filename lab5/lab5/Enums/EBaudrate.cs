@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace lab4.Enums
+namespace lab5.Enums
 {
     public enum EBaudrate
     {
