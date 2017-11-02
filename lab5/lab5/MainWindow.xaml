@@ -168,6 +168,7 @@
                       DisplayMemberPath="Description"
                       SelectedValuePath="Value"
                       SelectedValue="None"
+                      SelectedItem="{Binding Path=ParitySelected}"
                       IsEnabled="{Binding Path=IsPortNotOpen}"/>
             <ComboBox Grid.Row="5" Grid.Column="1" Margin="5"
                       ItemsSource="{Binding Source={StaticResource FlowControl}}"
