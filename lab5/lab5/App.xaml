@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:lab5"
              xmlns:vms="clr-namespace:lab5.ViewModels"
+             Startup="OnAppStarted"
+             Exit="OnAppClosed"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <vms:MainWindowWm x:Key="MainWindowWm" />

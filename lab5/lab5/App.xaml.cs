@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
+using lab5.Backend;
 
 namespace lab5
 {
@@ -13,5 +8,14 @@ namespace lab5
     /// </summary>
     public partial class App : Application
     {
+        private void OnAppStarted(object sender, StartupEventArgs e)
+        {
+            InternalLogger.Log.Info("Application was started");
+        }
+
+        private void OnAppClosed(object sender, ExitEventArgs exitEventArgs)
+        {
+            InternalLogger.Log.Info("Application was finished");
+        }
     }
 }
