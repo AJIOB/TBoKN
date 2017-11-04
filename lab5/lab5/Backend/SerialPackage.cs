@@ -195,7 +195,7 @@ namespace lab5.Backend
             {
                 return 1;
             }
-            return SourceAddress.CompareTo(other);
+            return SourceAddress.CompareTo(other.SourceAddress);
         }
 
         /// <summary>

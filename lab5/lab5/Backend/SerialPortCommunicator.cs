@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.IO.Ports;
+using System.Linq;
 using System.Threading;
 using DataStructures;
 using lab5.Enums;
@@ -9,7 +10,7 @@ namespace lab5.Backend
     public class SerialPortCommunicator : INotifyPropertyChanged
     {
         private const int ReadTimeoutInMs = 100;
-
+        private const int MaxMessageSize = 64;
         private const byte ServerId = 0;
 
         private SerialPort _maskedSerial;
@@ -99,7 +100,13 @@ namespace lab5.Backend
         {
             InternalLogger.Log.Debug($"Targer ID: \"{destinationId}\"");
             InternalLogger.Log.Debug($"Sending string: \"{s}\"");
-            _transmitBuffer.Add(SerialPackage.GeneratePackage(MyId, destinationId, s));
+
+            if (string.IsNullOrEmpty(s)) return;
+            foreach (var subs in Enumerable.Range(0, s.Length / MaxMessageSize)
+                .Select(i => s.Substring(i * MaxMessageSize, MaxMessageSize)))
+            {
+                _transmitBuffer.Add(SerialPackage.GeneratePackage(MyId, destinationId, subs));
+            }
         }
 
         /// <summary>
@@ -149,7 +156,7 @@ namespace lab5.Backend
             //waiting timeout to receive package
             Thread.Sleep(ReadTimeoutInMs);
 
-            if (!IsOpen) return;
+            if (Serial == null || !Serial.IsOpen) return;
 
             int bytesToRead = Serial.BytesToRead;
             byte[] bytes = new byte[bytesToRead];
