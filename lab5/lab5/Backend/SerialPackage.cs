@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using lab5.Backend.Exceptions;
 
 namespace lab5.Backend
 {
-    public class SerialPackage
+    public class SerialPackage : IComparable <SerialPackage>
     {
         private const byte StartStopByte = 0x7E;
         private const byte EscapeByte = 0x7D;
@@ -18,8 +19,8 @@ namespace lab5.Backend
         public byte DestinationAddress { get; private set; } = 0;
         public byte SourceAddress { get; private set; } = 0;
         public string Info { get; private set; } = string.Empty;
-        public bool IsRecognized { get; private set; } = false;
-        public bool IsDataGetted { get; private set; } = false;
+        public bool IsRecognized { get; set; } = false;
+        public bool IsDataGetted { get; set; } = false;
 
         #endregion
 
@@ -83,6 +84,17 @@ namespace lab5.Backend
         {
             //TODO
             return new byte[0];
+        }
+
+        /// <summary>
+        /// Compare with other SerialPackage use with priority
+        /// </summary>
+        /// <param name="other">Second comparable operand</param>
+        /// <returns>Compare result</returns>
+        public int CompareTo(SerialPackage other)
+        {
+            //TODO
+            throw new NotImplementedException();
         }
     }
 }

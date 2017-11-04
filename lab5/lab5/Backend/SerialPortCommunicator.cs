@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.IO.Ports;
 using System.Threading;
+using DataStructures;
 using lab5.Enums;
 
 namespace lab5.Backend
@@ -23,7 +21,7 @@ namespace lab5.Backend
         }
 
         //thread-safe queue
-        private readonly ConcurrentQueue<SerialPackage> _transmitBuffer = new ConcurrentQueue<SerialPackage>();
+        private readonly ConcurrentPriorityQueue<SerialPackage> _transmitBuffer = new ConcurrentPriorityQueue<SerialPackage>();
 
         public delegate void ReceivedEventHandler(string message);
 
@@ -39,7 +37,7 @@ namespace lab5.Backend
             private set => ChangeProperty(ref value, ref _isOpen, nameof(IsOpen));
         }
 
-        public byte MyId { private get; set; } = 0;
+        public byte MyId { private get; set; }
 
         public static string[] Ports => SerialPort.GetPortNames();
 
@@ -101,7 +99,7 @@ namespace lab5.Backend
         {
             InternalLogger.Log.Debug($"Targer ID: \"{destinationId}\"");
             InternalLogger.Log.Debug($"Sending string: \"{s}\"");
-            _transmitBuffer.Enqueue(SerialPackage.GeneratePackage(MyId, destinationId, s));
+            _transmitBuffer.Add(SerialPackage.GeneratePackage(MyId, destinationId, s));
         }
 
         /// <summary>
@@ -131,12 +129,7 @@ namespace lab5.Backend
             Serial.Open();
 
             _receivedHandler = receivedEventHandler;
-
-            //Clean transcieve buffer
-            while (!_transmitBuffer.IsEmpty)
-            {
-                _transmitBuffer.TryDequeue(out SerialPackage _);
-            }
+            _transmitBuffer.Clear();
             
             Serial.DataReceived += delegate { ReadExisting(); };
 
@@ -163,6 +156,7 @@ namespace lab5.Backend
             if (SerialPackage.TryParsePackage(bytes, out SerialPackage package))
             {
                 WorkWithReceivedPackage(package);
+                WritePackageToPort(_transmitBuffer.Take());
             }
         }
 
@@ -172,7 +166,27 @@ namespace lab5.Backend
         /// <param name="package">Received package</param>
         private void WorkWithReceivedPackage(SerialPackage package)
         {
-            
+            // Work as destination
+            if (MyId == package.DestinationAddress)
+            {
+                _receivedHandler?.Invoke(package.Info);
+                package.IsDataGetted = true;
+                package.IsRecognized = true;
+            }
+
+            // Work as source
+            if (MyId != package.SourceAddress)
+            {
+                _transmitBuffer.Add(package);
+            }
+            else if (!package.IsRecognized)
+            {
+                InternalLogger.Log.Info($"ID {package.DestinationAddress} wasn't recognize data: {package.Info}");
+            }
+            else if (!package.IsDataGetted)
+            {
+                InternalLogger.Log.Info($"ID {package.DestinationAddress} wasn't get data: {package.Info}");
+            }
         }
 
         /// <summary>
