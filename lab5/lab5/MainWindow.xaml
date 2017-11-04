@@ -52,16 +52,22 @@
         </Grid.ColumnDefinitions>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="3*" />
-                <RowDefinition Height="7*" />
+                <RowDefinition Height="9*" />
+                <RowDefinition Height="4*" />
+                <RowDefinition Height="21*" />
             </Grid.RowDefinitions>
 
-            <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
                 <TextBox Name="InputTextBox" Margin="5" HorizontalScrollBarVisibility="Auto"
                          VerticalScrollBarVisibility="Auto" AcceptsReturn="True" AcceptsTab="True"
                          IsUndoEnabled="False" 
                          Text="{Binding Path=TextToSend}"
-                         IsEnabled="{Binding Path=IsPortOpen}" TextChanged="SendText"/>
+                         IsEnabled="{Binding Path=IsPortOpen}"/>
 
                 <!--Input text watermark-->
                 <TextBlock IsHitTestVisible="False" VerticalAlignment="Top"
@@ -84,7 +90,7 @@
                 </TextBlock>
             </Grid>
 
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
                 <TextBox Name="OutputTextBox" Margin="5" HorizontalScrollBarVisibility="Auto"
                          Text="{Binding Path=ReceivedText}"
                          VerticalScrollBarVisibility="Auto" AcceptsReturn="True" AcceptsTab="True" IsReadOnly="True" TextChanged="OnOutputTextChanged" />
@@ -104,6 +110,13 @@
                     </TextBlock.Style>
                 </TextBlock>
             </Grid>
+
+            <Button Grid.Row="1" Grid.Column="1"
+                    Margin="5"
+                    Content="Send"
+                    IsEnabled="{Binding Path=IsPortOpen}"
+                    Click="SendText"
+                    />
         </Grid>
 
         <Grid Grid.Column="1">
