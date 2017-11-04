@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using lab5.Backend.Exceptions;
 
 namespace lab5.Backend
 {
-    public class SerialPackage : IComparable <SerialPackage>
+    public class SerialPackage : IComparable<SerialPackage>
     {
         private const byte StartStopByte = 0x7E;
-        private const byte EscapeByte = 0x7D;
-        private const byte StartStopByteSecondInEscape = 0x5E;
-        private const byte EscapeByteSecondInEscape = 0x5D;
+
+        private const int TokenBitNum = 4;
+        private const int IsRecognizedBitNum = 7;
+        private const int IsDataGettedBitNum = 6;
 
         private const byte MessageMaxLen = 0xFF;
+
+        private static readonly Encoding LocalEncoging = Encoding.UTF8;
 
         #region Fields
 
@@ -52,7 +56,7 @@ namespace lab5.Backend
         /// <returns>Generated package</returns>
         public static SerialPackage GeneratePackage(byte sourceId, byte destId, string message)
         {
-            if (message.Length > MessageMaxLen)
+            if (LocalEncoging.GetByteCount(message) > MessageMaxLen)
             {
                 throw new BadMessageLengthException();
             }
@@ -82,19 +86,63 @@ namespace lab5.Backend
         /// <returns>Byte array to write to serial port</returns>
         public byte[] BytesToWrite()
         {
-            //TODO
-            return new byte[0];
+            List<byte> packetBytes = new List<byte>();
+
+            //SD (Starting delimiter)
+            packetBytes.Add(StartStopByte);
+
+            //AC (Access Control)
+            packetBytes.Add(SetBitInByte(IsToken, TokenBitNum));
+
+            //DA, SA
+            packetBytes.Add(DestinationAddress);
+            packetBytes.Add(SourceAddress);
+
+            //LEN, INFO
+            byte[] encodedInfo = LocalEncoging.GetBytes(Info);
+            packetBytes.Add((byte)encodedInfo.Length);
+            packetBytes.AddRange(encodedInfo);
+
+            //ED (Ending delimiter)
+            packetBytes.Add(StartStopByte);
+
+            //FS (Frame status)
+            packetBytes.Add((byte) (SetBitInByte(IsDataGetted, IsDataGettedBitNum) | SetBitInByte(IsRecognized, IsRecognizedBitNum)));
+
+            return packetBytes.ToArray();
         }
 
         /// <summary>
         /// Compare with other SerialPackage use with priority
         /// </summary>
         /// <param name="other">Second comparable operand</param>
-        /// <returns>Compare result</returns>
+        /// <returns>Compare result. If it is less than zero => this instance is less than value. If zero => this instance is equal to value. Greater than zero => this instance is greater than value</returns>
         public int CompareTo(SerialPackage other)
         {
-            //TODO
-            throw new NotImplementedException();
+            if (IsToken && other.IsToken)
+            {
+                return 0;
+            }
+            if (IsToken)
+            {
+                return -1;
+            }
+            if (other.IsToken)
+            {
+                return 1;
+            }
+            return SourceAddress.CompareTo(other);
+        }
+
+        /// <summary>
+        /// Set bit in empty (0x00) byte to required value
+        /// </summary>
+        /// <param name="value">Value to set</param>
+        /// <param name="pos">Bit position</param>
+        /// <returns></returns>
+        public static byte SetBitInByte(bool value, int pos)
+        {
+            return (byte)(Convert.ToInt32(value) << pos);
         }
     }
 }
