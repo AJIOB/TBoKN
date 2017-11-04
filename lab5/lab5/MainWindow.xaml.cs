@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO.Ports;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using lab5.Backend;
-using lab5.Backend.Exceptions;
-using lab5.Enums;
-using lab5.Enums.Utilities;
 using lab5.ViewModels;
 
 namespace lab5

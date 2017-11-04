@@ -65,8 +65,6 @@ namespace lab5.ViewModels
         /// </summary>
         public void PortsRefresh()
         {
-            InternalLogger.Log.Debug("Refreshing");
-
             Ports.Clear();
             foreach (var port in SerialPortCommunicator.Ports)
             {
@@ -140,29 +138,9 @@ namespace lab5.ViewModels
         /// <summary>
         /// Load received data from serial port
         /// </summary>
-        private void LoadReceivedData(object sender, EventArgs eventArgs)
+        private void LoadReceivedData(string message)
         {
-            try
-            {
-                string s;
-                do
-                {
-                    try
-                    {
-                        s = Communicator.ReadExisting();
-                        ReceivedText += s;
-                    }
-                    catch (CannotFindStartSymbolException)
-                    {
-                        break;
-                    }
-                } while (s != "");
-            }
-            catch (Exception exception)
-            {
-                InternalLogger.Log.Error("Cannot read data from port:", exception);
-                MainWindow.ShowErrorBox(exception.Message);
-            }
+            ReceivedText += message;
         }
     }
 }
