@@ -132,6 +132,7 @@ namespace lab5.ViewModels
             if (!string.IsNullOrEmpty(TextToSend))
             {
                 Communicator.Send(byte.Parse(DestinationId), TextToSend);
+                TextToSend = string.Empty;
             }
         }
 
