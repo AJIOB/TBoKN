@@ -125,7 +125,7 @@ namespace lab5.Backend
             ReceivedEventHandler receivedEventHandler)
         {
             if (IsOpen) return;
-            Serial = new SerialPort(portName, (int) baudRate, parity, (int) dataBits, stopBits);
+            Serial = new SerialPort(portName, (int)baudRate, parity, (int)dataBits, stopBits);
             Serial.Open();
 
             _receivedHandler = receivedEventHandler;
@@ -149,6 +149,8 @@ namespace lab5.Backend
             //waiting timeout to receive package
             Thread.Sleep(ReadTimeoutInMs);
 
+            if (!IsOpen) return;
+
             int bytesToRead = Serial.BytesToRead;
             byte[] bytes = new byte[bytesToRead];
             Serial.Read(bytes, 0, bytesToRead);
@@ -167,7 +169,7 @@ namespace lab5.Backend
         private void WorkWithReceivedPackage(SerialPackage package)
         {
             // Work as destination
-            if (MyId == package.DestinationAddress)
+            if (MyId == package.DestinationAddress && !package.IsToken)
             {
                 _receivedHandler?.Invoke(package.Info);
                 package.IsDataGetted = true;
@@ -175,7 +177,7 @@ namespace lab5.Backend
             }
 
             // Work as source
-            if (MyId != package.SourceAddress)
+            if (MyId != package.SourceAddress || package.IsToken)
             {
                 _transmitBuffer.Add(package);
             }

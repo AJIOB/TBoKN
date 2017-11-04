@@ -32,7 +32,12 @@ namespace lab5.ViewModels
         public EnumViewObject StopBitsSelected { get; set; }
         public EnumViewObject ParitySelected { get; set; }
 
-        public string TextToSend { get; set; }
+        private string _textToSend = string.Empty;
+        public string TextToSend
+        {
+            get => _textToSend;
+            set => ChangeProperty(ref value, ref _textToSend, nameof(TextToSend));
+        }
 
         private string _received = string.Empty;
         public string ReceivedText
