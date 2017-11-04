@@ -12,6 +12,8 @@ namespace lab5.Backend
 {
     public class SerialPortCommunicator : INotifyPropertyChanged
     {
+        private const int ReadTimeoutInMs = 100;
+
         private SerialPort _maskedSerialPort;
 
         private SerialPort SerialPort

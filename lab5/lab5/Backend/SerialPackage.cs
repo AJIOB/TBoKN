@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using lab5.Backend.Exceptions;
 
 namespace lab5.Backend
 {
@@ -8,7 +9,8 @@ namespace lab5.Backend
         private const byte EscapeByte = 0x7D;
         private const byte StartStopByteSecondInEscape = 0x5E;
         private const byte EscapeByteSecondInEscape = 0x5D;
-        private const int ReadTimeoutInMs = 100;
+
+        private const byte MessageMaxLen = 0xFF;
 
         #region Fields
 
@@ -25,21 +27,58 @@ namespace lab5.Backend
         {
         }
 
+        #region Static methods
+
         /// <summary>
         /// Parse packet from byte sequence
         /// </summary>
-        /// <param name="packetBytes">packet bytes</param>
-        /// <returns></returns>
-        public static SerialPackage ParsePackage(IEnumerable<byte> packetBytes)
+        /// <param name="packetBytes">Received packet bytes</param>
+        /// <param name="result">Parsing result</param>
+        /// <returns>True, if package was successfully parsed, else false</returns>
+        public static bool TryParsePackage(IEnumerable<byte> packetBytes, out SerialPackage result)
         {
             //TODO: write
-            return new SerialPackage();
+            result = null;
+            return false;
         }
+
+        /// <summary>
+        /// Generate package
+        /// </summary>
+        /// <param name="sourceId">Package source ID</param>
+        /// <param name="destId">Package destination ID</param>
+        /// <param name="message">Message to write</param>
+        /// <returns>Generated package</returns>
+        public static SerialPackage GeneratePackage(byte sourceId, byte destId, string message)
+        {
+            if (message.Length > MessageMaxLen)
+            {
+                throw new BadMessageLengthException();
+            }
+
+            return new SerialPackage
+            {
+                DestinationAddress = destId,
+                SourceAddress = sourceId,
+                Info = message
+            };
+        }
+
+        /// <summary>
+        /// Generate token package
+        /// </summary>
+        /// <returns>Generated package</returns>
+        public static SerialPackage GenerateToken()
+        {
+            return new SerialPackage { IsToken = true };
+        }
+
+        #endregion
 
         /// <summary>
         /// Generate byte array to write data in serial port
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Byte array to write to serial port</returns>
         public byte[] BytesToWrite()
         {
             //TODO
