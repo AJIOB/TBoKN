@@ -3,8 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using lab5.Enums;
 
@@ -14,18 +12,18 @@ namespace lab5.Backend
     {
         private const int ReadTimeoutInMs = 100;
 
-        private SerialPort _maskedSerialPort;
+        private const byte ServerId = 0;
 
-        private SerialPort SerialPort
+        private SerialPort _maskedSerial;
+
+        private SerialPort Serial
         {
-            get => _maskedSerialPort;
-            set => ChangeProperty(ref value, ref _maskedSerialPort, nameof(SerialPort));
+            get => _maskedSerial;
+            set => ChangeProperty(ref value, ref _maskedSerial, nameof(Serial));
         }
 
-        private readonly List<byte> _receivedBuffer = new List<byte>();
-
         //thread-safe queue
-        private readonly ConcurrentQueue<SerialPackage> _transceiveBuffer = new ConcurrentQueue<SerialPackage>();
+        private readonly ConcurrentQueue<SerialPackage> _transmitBuffer = new ConcurrentQueue<SerialPackage>();
 
         public delegate void ReceivedEventHandler(string message);
 
@@ -87,9 +85,9 @@ namespace lab5.Backend
             // if serial port was changed => is open was changed
             PropertyChanged += (sender, args) =>
             {
-                if (args.PropertyName == nameof(SerialPort))
+                if (args.PropertyName == nameof(Serial))
                 {
-                    IsOpen = (SerialPort != null);
+                    IsOpen = (Serial != null);
                 }
             };
         }
@@ -103,7 +101,7 @@ namespace lab5.Backend
         {
             InternalLogger.Log.Debug($"Targer ID: \"{destinationId}\"");
             InternalLogger.Log.Debug($"Sending string: \"{s}\"");
-            //TODO
+            _transmitBuffer.Enqueue(SerialPackage.GeneratePackage(MyId, destinationId, s));
         }
 
         /// <summary>
@@ -112,8 +110,8 @@ namespace lab5.Backend
         public void Close()
         {
             if (!IsOpen) return;
-            SerialPort.Close();
-            SerialPort = null;
+            Serial.Close();
+            Serial = null;
         }
 
         /// <summary>
@@ -129,21 +127,24 @@ namespace lab5.Backend
             ReceivedEventHandler receivedEventHandler)
         {
             if (IsOpen) return;
-            SerialPort = new SerialPort(portName, (int) baudRate, parity, (int) dataBits, stopBits);
-            SerialPort.Open();
+            Serial = new SerialPort(portName, (int) baudRate, parity, (int) dataBits, stopBits);
+            Serial.Open();
 
             _receivedHandler = receivedEventHandler;
-            _receivedBuffer.Clear();
 
             //Clean transcieve buffer
-            while (!_transceiveBuffer.IsEmpty)
+            while (!_transmitBuffer.IsEmpty)
             {
-                _transceiveBuffer.TryDequeue(out SerialPackage _);
+                _transmitBuffer.TryDequeue(out SerialPackage _);
             }
             
-            SerialPort.DataReceived += delegate { ReadExisting(); };
+            Serial.DataReceived += delegate { ReadExisting(); };
 
-            //TODO: check server & write it logic
+            //check server & write token of require
+            if (MyId == ServerId)
+            {
+                WritePackageToPort(SerialPackage.GenerateToken());
+            }
         }
 
         /// <summary>
@@ -152,36 +153,36 @@ namespace lab5.Backend
         /// <returns>Existing string</returns>
         private void ReadExisting()
         {
-            //TODO
-            var parsedList = new List<byte>();
-            //Reading data from serial port
-            while (true)
+            //waiting timeout to receive package
+            Thread.Sleep(ReadTimeoutInMs);
+
+            int bytesToRead = Serial.BytesToRead;
+            byte[] bytes = new byte[bytesToRead];
+            Serial.Read(bytes, 0, bytesToRead);
+
+            if (SerialPackage.TryParsePackage(bytes, out SerialPackage package))
             {
-                int received;
-                try
-                {
-                    received = SerialPort.ReadByte();
-                }
-                catch (TimeoutException)
-                {
-                    //not receiving more symbols, exiting
-                    break;
-                }
-
-                if (received < 0)
-                {
-                    InternalLogger.Log.Info("End of the stream was read");
-                    break;
-                }
-
-                var receivedByte = (byte)received;
+                WorkWithReceivedPackage(package);
             }
+        }
 
-            if (_receivedBuffer.Count > 0)
-            {
-                parsedList.AddRange(_receivedBuffer);
-                _receivedBuffer.Clear();
-            }
+        /// <summary>
+        /// Working with received package
+        /// </summary>
+        /// <param name="package">Received package</param>
+        private void WorkWithReceivedPackage(SerialPackage package)
+        {
+            
+        }
+
+        /// <summary>
+        /// Write package to serial port
+        /// </summary>
+        /// <param name="package">Package to write</param>
+        private void WritePackageToPort(SerialPackage package)
+        {
+            byte[] token = package.BytesToWrite();
+            Serial.Write(token, 0, token.Length);
         }
     }
 }
