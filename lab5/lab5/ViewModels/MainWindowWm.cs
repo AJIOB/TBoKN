@@ -22,25 +22,9 @@ namespace lab5.ViewModels
         public bool IsPortOpen => Communicator.IsOpen;
         public bool IsPortNotOpen => !IsPortOpen;
 
-        /// <summary>
-        /// Parsed source ID
-        /// </summary>
-        private byte _si;
-        /// <summary>
-        /// Parsed destination ID
-        /// </summary>
-        private byte _di;
+        public string SourceId { get; set; }
 
-        public string SourceId {
-            get => _si.ToString();
-            set => _si = byte.Parse(value);
-        }
-
-        public string DestinationId
-        {
-            get => _di.ToString();
-            set => _di = byte.Parse(value);
-        }
+        public string DestinationId { get; set; }
 
         public string PortSelected { get; set; }
         public EnumViewObject BaudrateSelected { get; set; }
@@ -133,6 +117,7 @@ namespace lab5.ViewModels
         /// </summary>
         public void OpenConnection()
         {
+            Communicator.MyId = byte.Parse(SourceId);
             Communicator.Open(PortSelected,
                 (EBaudrate)BaudrateSelected.Value,
                 (Parity)ParitySelected.Value,
@@ -148,7 +133,7 @@ namespace lab5.ViewModels
         {
             if (!string.IsNullOrEmpty(TextToSend))
             {
-                Communicator.Send(TextToSend);
+                Communicator.Send(byte.Parse(DestinationId), TextToSend);
             }
         }
 

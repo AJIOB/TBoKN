@@ -67,8 +67,8 @@ namespace lab5
             }
             catch (Exception exception)
             {
-                InternalLogger.Log.Error(@"Cannot write to port", exception);
-                ShowErrorBox(@"Cannot write to port");
+                InternalLogger.Log.Error($"Cannot write to port with target ID \"{_vm.DestinationId}\"", exception);
+                ShowErrorBox(@"Cannot write to port. Maybe you write bad target ID");
             }
         }
 

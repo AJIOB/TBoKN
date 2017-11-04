@@ -19,7 +19,6 @@ namespace lab5.Backend
             set => ChangeProperty(ref value, ref _maskedSerialPort, nameof(SerialPort));
         }
 
-        private const int BitsInByte = 8;
         private const byte JamByte = 0xFF;
         private const byte EscapeByte = 0x01;
         private const byte JamByteSecondInEscape = 0x00;
@@ -47,6 +46,8 @@ namespace lab5.Backend
             get => _isOpen;
             private set => ChangeProperty(ref value, ref _isOpen, nameof(IsOpen));
         }
+
+        public byte MyId { private get; set; } = 0;
 
         public static string[] Ports => SerialPort.GetPortNames();
 
@@ -102,10 +103,13 @@ namespace lab5.Backend
         /// <summary>
         /// Sending info to serial port
         /// </summary>
+        /// <param name="destinationId">Target ID to send</param>
         /// <param name="s">Sending info</param>
-        public void Send(string s)
+        public void Send(byte destinationId, string s)
         {
+            InternalLogger.Log.Debug($"Targer ID: \"{destinationId}\"");
             InternalLogger.Log.Debug($"Sending string: \"{s}\"");
+            //TODO
             var dataToSend = GeneratePacket(Encoding.UTF8.GetBytes(s)).ToArray();
             foreach (var b in dataToSend)
             {
