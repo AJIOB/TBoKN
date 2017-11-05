@@ -204,6 +204,10 @@ namespace lab5.Backend
         /// <param name="package">Package to write</param>
         private void WritePackageToPort(SerialPackage package)
         {
+            InternalLogger.Log.Debug(package.IsToken
+                ? $"Token was send. Info: {package.Info}"
+                : $"Message was sent: {package.Info}");
+
             byte[] token = package.BytesToWrite();
             Serial.Write(token, 0, token.Length);
         }
