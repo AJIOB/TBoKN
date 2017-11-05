@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.IO.Ports;
 using System.Linq;
 using System.Threading;
-using DataStructures;
 using lab5.Enums;
 
 namespace lab5.Backend
@@ -22,7 +22,7 @@ namespace lab5.Backend
         }
 
         //thread-safe queue
-        private readonly ConcurrentPriorityQueue<SerialPackage> _transmitBuffer = new ConcurrentPriorityQueue<SerialPackage>();
+        private readonly ConcurrentPriorityQueue<int, SerialPackage> _transmitBuffer = new ConcurrentPriorityQueue<int, SerialPackage>();
 
         public delegate void ReceivedEventHandler(string message);
 
@@ -105,7 +105,8 @@ namespace lab5.Backend
             foreach (var subs in Enumerable.Range(0, s.Length / MaxMessageSize)
                 .Select(i => s.Substring(i * MaxMessageSize, MaxMessageSize)))
             {
-                _transmitBuffer.Add(SerialPackage.GeneratePackage(MyId, destinationId, subs));
+                SerialPackage package = SerialPackage.GeneratePackage(MyId, destinationId, subs);
+                _transmitBuffer.Enqueue(package.Priority, package);
             }
         }
 
@@ -165,7 +166,10 @@ namespace lab5.Backend
             if (SerialPackage.TryParsePackage(bytes, out SerialPackage package))
             {
                 WorkWithReceivedPackage(package);
-                WritePackageToPort(_transmitBuffer.Take());
+                if (_transmitBuffer.TryDequeue(out var result))
+                {
+                    WritePackageToPort(result.Value);
+                }
             }
         }
 
@@ -186,7 +190,7 @@ namespace lab5.Backend
             // Work as source
             if (MyId != package.SourceAddress || package.IsToken)
             {
-                _transmitBuffer.Add(package);
+                _transmitBuffer.Enqueue(package.Priority, package);
             }
             else if (!package.IsRecognized)
             {
@@ -210,6 +214,8 @@ namespace lab5.Backend
 
             byte[] token = package.BytesToWrite();
             Serial.Write(token, 0, token.Length);
+
+            InternalLogger.Log.Debug($"Queue size on res: {_transmitBuffer.Count}");
         }
     }
 }

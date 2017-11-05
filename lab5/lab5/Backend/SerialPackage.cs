@@ -17,6 +17,8 @@ namespace lab5.Backend
         private const byte MessageMaxLen = 0xFF;
         private const int MinPackageSize = 7;
 
+        private const int TokenPriority = -1;
+
         private static readonly Encoding LocalEncoging = Encoding.UTF8;
 
         #region Fields
@@ -27,6 +29,8 @@ namespace lab5.Backend
         public string Info { get; private set; } = string.Empty;
         public bool IsRecognized { get; set; } = false;
         public bool IsDataGetted { get; set; } = false;
+
+        public int Priority => IsToken ? TokenPriority : SourceAddress;
 
         #endregion
 
@@ -171,7 +175,7 @@ namespace lab5.Backend
             packetBytes.Add(StartStopByte);
 
             //FS (Frame status)
-            packetBytes.Add((byte) (SetBitInByte(IsDataGetted, IsDataGettedBitNum) | SetBitInByte(IsRecognized, IsRecognizedBitNum)));
+            packetBytes.Add((byte)(SetBitInByte(IsDataGetted, IsDataGettedBitNum) | SetBitInByte(IsRecognized, IsRecognizedBitNum)));
 
             return packetBytes.ToArray();
         }
