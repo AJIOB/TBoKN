@@ -86,7 +86,7 @@ namespace lab5.Backend
             {
                 if (args.PropertyName == nameof(Serial))
                 {
-                    IsOpen = (Serial != null);
+                    IsOpen = (Serial != null && Serial.IsOpen);
                 }
             };
         }
@@ -134,13 +134,15 @@ namespace lab5.Backend
             ReceivedEventHandler receivedEventHandler)
         {
             if (IsOpen) return;
-            Serial = new SerialPort(portName, (int)baudRate, parity, (int)dataBits, stopBits);
-            Serial.Open();
+            SerialPort serial = new SerialPort(portName, (int)baudRate, parity, (int)dataBits, stopBits);
+            serial.Open();
 
             _receivedHandler = receivedEventHandler;
             _transmitBuffer.Clear();
             
-            Serial.DataReceived += delegate { ReadExisting(); };
+            serial.DataReceived += delegate { ReadExisting(); };
+
+            Serial = serial;
 
             //check server & write token of require
             if (MyId == ServerId)
