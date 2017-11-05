@@ -102,9 +102,10 @@ namespace lab5.Backend
             InternalLogger.Log.Debug($"Sending string: \"{s}\"");
 
             if (string.IsNullOrEmpty(s)) return;
-            foreach (var subs in Enumerable.Range(0, s.Length / MaxMessageSize)
-                .Select(i => s.Substring(i * MaxMessageSize, MaxMessageSize)))
+            foreach (var i in Enumerable.Range(0, (s.Length + MaxMessageSize - 1) / MaxMessageSize))
             {
+                int secondPartLength = s.Length - i * MaxMessageSize;
+                string subs = s.Substring(i * MaxMessageSize, secondPartLength >= MaxMessageSize ? MaxMessageSize : secondPartLength);
                 SerialPackage package = SerialPackage.GeneratePackage(MyId, destinationId, subs);
                 _transmitBuffer.Enqueue(package.Priority, package);
             }

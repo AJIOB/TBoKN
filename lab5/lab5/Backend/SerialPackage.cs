@@ -30,7 +30,8 @@ namespace lab5.Backend
         public bool IsRecognized { get; set; } = false;
         public bool IsDataGetted { get; set; } = false;
 
-        public int Priority => IsToken ? TokenPriority : SourceAddress;
+        //low priority element must last in priorityQueue
+        public int Priority => (IsToken ? TokenPriority : SourceAddress) * (-1);
 
         #endregion
 
